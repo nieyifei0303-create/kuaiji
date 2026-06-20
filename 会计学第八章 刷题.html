@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会计学 · 第八章 刷题</title>
+<style>
+  :root{
+    --paper:#EEF0EC;
+    --card:#FBFBF8;
+    --ink:#16323C;
+    --ink-soft:#42565d;
+    --line:#d7dcd6;
+    --gold:#C0922B;
+    --gold-soft:#f3ead0;
+    --green:#1E7A52;
+    --green-bg:#e3f1e8;
+    --red:#C0392B;
+    --red-bg:#f7e4e1;
+    --shadow:0 1px 2px rgba(20,50,60,.06),0 8px 24px rgba(20,50,60,.06);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.65;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:18px 16px 60px;}
+
+  header{margin:8px 2px 18px;border-bottom:2px solid var(--ink);padding-bottom:12px;}
+  .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700;font-family:Georgia,"Times New Roman",serif;}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:25px;margin:4px 0 2px;font-weight:700;letter-spacing:-.01em;}
+  .sub{font-size:13px;color:var(--ink-soft);}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:18px;margin-bottom:14px;}
+
+  .lead{font-size:14.5px;color:var(--ink-soft);margin:0 0 16px;}
+  .sec-list{display:flex;flex-direction:column;gap:10px;}
+  .sec-btn{
+    display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+    font:inherit;color:var(--ink);transition:.15s;box-shadow:var(--shadow);
+  }
+  .sec-btn:hover,.sec-btn:active{border-color:var(--ink);transform:translateY(-1px);}
+  .sec-no{font-family:Georgia,serif;font-size:19px;font-weight:700;color:var(--gold);min-width:34px;}
+  .sec-meta{flex:1;}
+  .sec-title{font-weight:600;font-size:15.5px;}
+  .sec-desc{font-size:12.5px;color:var(--ink-soft);margin-top:1px;}
+  .sec-right{text-align:right;white-space:nowrap;}
+  .sec-count{font-size:12px;color:var(--ink-soft);font-family:Georgia,serif;}
+  .sec-badge{display:block;font-family:Georgia,serif;font-size:11px;color:#fff;background:var(--green);border-radius:10px;padding:1px 8px;margin-top:4px;}
+  .all-btn{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .all-btn .sec-no,.all-btn .sec-count{color:#d9c89a;}
+  .all-btn .sec-desc{color:#b7c4c1;}
+  .wrong-btn{background:var(--red-bg);border-color:#eccac4;}
+  .wrong-btn .sec-no{color:var(--red);}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:12px;}
+  .pill{font-family:Georgia,serif;font-size:13px;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px 12px;}
+  .pill b{color:var(--ink);}
+  .quit{background:none;border:none;color:var(--ink-soft);font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;padding:4px;}
+  .bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:16px;}
+  .bar > i{display:block;height:100%;background:var(--gold);border-radius:6px;transition:width .35s ease;}
+
+  .qhead{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:6px;background:var(--gold-soft);color:#8a6a16;}
+  .tag.multi{background:#e4ecf3;color:#2a5572;}
+  .tag.judge{background:#eae6f0;color:#5b4a78;}
+  .tag.calc{background:#fbe6d9;color:#9a4f1c;}
+  .tag.fill{background:#dde9e3;color:#1a6b4f;}
+  .secref{font-family:Georgia,serif;font-size:12px;color:var(--ink-soft);}
+  .qtext{font-size:17px;font-weight:600;margin:2px 0 16px;line-height:1.55;}
+  .qtext .blank{border-bottom:1.5px solid var(--gold);padding:0 22px;}
+
+  .opts{display:flex;flex-direction:column;gap:9px;}
+  .opt{
+    display:flex;gap:11px;align-items:flex-start;cursor:pointer;
+    border:1px solid var(--line);border-radius:11px;padding:12px 14px;font:inherit;
+    background:#fff;text-align:left;color:var(--ink);transition:.12s;width:100%;
+  }
+  .opt:hover{border-color:var(--ink-soft);}
+  .opt .mk{
+    font-family:Georgia,serif;font-weight:700;font-size:14px;min-width:22px;height:22px;
+    border:1.5px solid var(--ink-soft);border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:var(--ink-soft);flex-shrink:0;margin-top:1px;
+  }
+  .opt.sel{border-color:var(--ink);background:#f0f3f0;}
+  .opt.sel .mk{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .opt.correct{border-color:var(--green);background:var(--green-bg);}
+  .opt.correct .mk{background:var(--green);color:#fff;border-color:var(--green);}
+  .opt.wrong{border-color:var(--red);background:var(--red-bg);}
+  .opt.wrong .mk{background:var(--red);color:#fff;border-color:var(--red);}
+  .opt.locked{cursor:default;}
+  .otext{flex:1;font-size:15px;line-height:1.5;}
+
+  /* table fill */
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:2px 0 4px;border-radius:10px;}
+  table.qtable{border-collapse:collapse;width:100%;font-size:13.5px;}
+  table.qtable th,table.qtable td{border:1px solid var(--line);padding:8px 8px;text-align:center;}
+  table.qtable th{background:var(--ink);color:#fff;font-weight:600;font-size:12.5px;}
+  table.qtable td:first-child{text-align:left;font-weight:600;background:#f4f5f1;white-space:nowrap;}
+  input.tin{font-family:Georgia,serif;font-size:14px;width:74px;text-align:center;border:none;border-bottom:1.5px solid var(--gold);background:#fff;padding:4px 2px;color:var(--ink);border-radius:3px 3px 0 0;}
+  input.tin:focus{outline:none;border-bottom-color:var(--ink);background:#fffef8;}
+  input.tin.tok{border-bottom-color:var(--green);background:var(--green-bg);color:var(--green);font-weight:700;}
+  input.tin.tno{border-bottom-color:var(--red);background:var(--red-bg);color:var(--red);font-weight:700;}
+  .hint{font-size:12px;color:var(--ink-soft);margin:9px 2px 2px;}
+
+  .fb{margin-top:15px;border-radius:11px;padding:13px 15px;font-size:14.5px;display:none;border:1px solid;}
+  .fb.show{display:block;}
+  .fb.ok{background:var(--green-bg);border-color:#bfe0cd;}
+  .fb.no{background:var(--red-bg);border-color:#eccac4;}
+  .fb .verdict{font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .fb.ok .verdict{color:var(--green);}
+  .fb.no .verdict{color:var(--red);}
+  .fb .ans{font-family:Georgia,serif;font-weight:700;}
+  .fb .exp{color:var(--ink);line-height:1.6;}
+  .fb .exp b{color:var(--ink);}
+
+  .btn{
+    display:block;width:100%;margin-top:14px;cursor:pointer;border:none;font:inherit;
+    background:var(--ink);color:#fff;font-weight:600;font-size:16px;border-radius:11px;padding:14px;transition:.15s;
+  }
+  .btn:hover{background:#0f262e;}
+  .btn:disabled{background:#b9c3c0;cursor:not-allowed;}
+  .btn.ghost{background:none;color:var(--ink);border:1.5px solid var(--ink);}
+  .btn.ghost:hover{background:#f0f3f0;}
+
+  .score-num{font-family:Georgia,serif;font-size:54px;font-weight:700;line-height:1;color:var(--ink);text-align:center;margin:6px 0 2px;}
+  .score-num span{font-size:24px;color:var(--ink-soft);}
+  .score-label{text-align:center;color:var(--ink-soft);font-size:14px;margin-bottom:16px;}
+  .verdict-line{text-align:center;font-size:16px;font-weight:600;margin-bottom:18px;padding:10px;border-radius:10px;background:var(--gold-soft);color:#8a6a16;}
+  .review-h{font-family:Georgia,serif;font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);border-bottom:1px solid var(--line);padding-bottom:7px;margin:22px 0 12px;}
+  .rev-item{border-left:3px solid var(--red);padding:4px 0 4px 13px;margin-bottom:16px;}
+  .rev-q{font-size:14.5px;font-weight:600;margin-bottom:5px;}
+  .rev-line{font-size:13.5px;color:var(--ink-soft);}
+  .rev-line .c{color:var(--green);font-weight:600;}
+  .rev-exp{font-size:13px;color:var(--ink-soft);margin-top:5px;background:#f4f5f1;border-radius:8px;padding:8px 11px;}
+  .reset-link{display:inline-block;margin:6px 2px 0;color:var(--ink-soft);font-size:12.5px;text-decoration:underline;cursor:pointer;background:none;border:none;font:inherit;}
+  footer{text-align:center;font-size:12px;color:#9aa6a2;margin-top:24px;font-family:Georgia,serif;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Financial Accounting · Ch.8</div>
+    <h1>固定资产、自然资源与无形资产</h1>
+    <div class="sub">折旧三方法+减值处置 · 计算题已并入 · 每题带解析 · 记录存本机</div>
+  </header>
+
+  <div id="app"></div>
+
+  <footer id="foot">选一个章节开始 · 共 <span id="totalQ"></span> 题 · 记录已存在本机</footer>
+</div>
+
+<script>
+/* ============ 题库 ============ */
+const SECTIONS = {
+  "8.1":"长期资产分类与固定资产周转率",
+  "8.2":"取得成本·资本化与费用化",
+  "8.3":"折旧方法与计算",
+  "8.4":"减值与处置",
+  "8.5":"自然资源·无形资产·现金流"
+};
+const SEC_DESC = {
+  "8.1":"有形/无形资产 · 固定资产周转率",
+  "8.2":"成本原则 · 资产组分配 · 修理维护 vs 扩建改良",
+  "8.3":"折旧概念 · 三要素 · 直线/工作量/双倍余额递减",
+  "8.4":"减值三步 · 减值损失 · 处置利得损失",
+  "8.5":"折耗 · 无形资产摊销 · 商誉 · 折旧估计变更"
+};
+const Q = [
+/* ===== 8.1 ===== */
+{sec:"8.1",type:"single",q:"下列哪一项属于<b>无形资产</b>？",
+opts:["经营用土地","经营用房屋设备","专利、商标、特许权","经营用自然资源"],ans:[2],
+exp:"无形资产无实物形态、授予所有者特定权利，如<b>专利、版权、特许权、经营权、商标</b>。土地、房屋设备、自然资源是有形资产。"},
+
+{sec:"8.1",type:"single",q:"固定资产周转率的计算公式是：",
+opts:["销售净额(或营业收入) ÷ 平均固定资产净值","净利润 ÷ 平均固定资产","固定资产 ÷ 销售净额","平均固定资产 ÷ 销售净额"],ans:[0],
+exp:"<b>固定资产周转率 = 销售净额 ÷ 平均固定资产净值</b>，平均净值=(期初净值+期末净值)/2。衡量每元固定资产创造的销售收入。"},
+
+{sec:"8.1",type:"single",q:"固定资产周转率“较高”通常意味着：",
+opts:["管理效率高，固定资产使用效率高","公司一定亏损","负债过多","资产闲置"],ans:[0],
+exp:"周转率高→<b>管理与资产使用效率高</b>。随时间上升说明使用效率越来越高，是债权人/分析师评价长期资产创收效率的指标。"},
+
+{sec:"8.1",type:"multi",q:"【多选】固定资产周转率“较低或下降”可能意味着：",
+opts:["公司正在扩张（购入更多生产用资产）以期未来增收","公司因衰退而削减资本性支出","管理层一定舞弊","与公司战略无关"],ans:[0,1],
+exp:"两种解读：①<b>扩张</b>——先投入资产、收入尚未跟上；②<b>衰退</b>——削减资本支出。需结合背景判断。"},
+
+/* ===== 8.2 ===== */
+{sec:"8.2",type:"single",q:"按成本原则，为使资产达到可使用状态而发生的合理必要支出应：",
+opts:["全部当期费用化","资本化计入资产成本（资本化支出）","计入所有者权益","计入负债"],ans:[1],
+exp:"<b>成本原则</b>：取得/准备过程中所有合理必要支出资本化为资产成本（资本化支出），而非当期费用。"},
+
+{sec:"8.2",type:"multi",q:"【多选】下列哪些应计入固定资产取得成本？",
+opts:["消费税、运输成本、安装成本","产权费、销售佣金、法律费用、测量费","折扣优惠（应予扣除）","采购发生的利息费用（应在发生时费用化）"],ans:[0,1],
+exp:"消费税、运费、安装、产权费、佣金、法律费、测量费等<b>计入成本</b>；但<b>折扣应扣除</b>、<b>采购利息应费用化</b>，故 C、D 不计入。"},
+
+{sec:"8.2",type:"single",q:"同时购入土地、厂房、设备作为一个资产组，总成本应如何分配？",
+opts:["平均分配","按各单项资产市场价值占资产组总市值的比例分配","全部计入土地","按账面价值分配"],ans:[1],
+exp:"资产组按<b>各单项市场价值占总市值的比例</b>分摊总成本。"},
+
+{sec:"8.2",type:"judge",q:"【判断】公司自建固定资产时，建造期间发生的利息（资本化利息）可计入资产成本。",
+opts:["正确","错误"],ans:[0],
+exp:"对。自建资产成本含建造相关的人工、材料，以及<b>建造期间的资本化利息</b>。"},
+
+{sec:"8.2",type:"single",q:"“日常修理和维护”支出的会计处理是：",
+opts:["资本化计入资产","当期费用化（收益性支出）","计入累计折旧","计入残值"],ans:[1],
+exp:"日常修理维护＝<b>收益性支出</b>，金额小、重复发生、不延长寿命→<b>当期费用化</b>。"},
+
+{sec:"8.2",type:"single",q:"“扩建和改良”支出（增加寿命/效率/产能）的处理是：",
+opts:["当期费用化","资本化（资本性支出），增加到资产账户","计入销售费用","直接冲减利润"],ans:[1],
+exp:"扩建改良＝<b>资本性支出</b>，金额大、少发生、提高经济利益→<b>资本化</b>计入资产账户，再逐年折旧。"},
+
+{sec:"8.2",type:"single",q:"把本应费用化的支出错误“资本化”，当年的影响是：",
+opts:["当年资产和净利润被高估","当年净利润被低估","当年所得税立即减少","对报表无影响"],ans:[0],
+exp:"资本化会<b>增加当年资产和净利润</b>（仅通过以后各年折旧逐步减少利润）；而费用化会立即减少当年利润和所得税。"},
+
+/* ===== 8.3 ===== */
+{sec:"8.3",type:"single",q:"关于折旧的本质，正确的是：",
+opts:["折旧是衡量资产当前市场价值的过程","折旧是把固定资产成本在使用寿命内系统合理分摊的过程","折旧等于资产的市价下跌额","折旧只在出售时计算"],ans:[1],
+exp:"折旧是<b>成本分摊（配比）过程</b>，把成本系统合理地分摊到各受益期，<b>不是</b>对资产当前市值的衡量。"},
+
+{sec:"8.3",type:"single",q:"计提折旧需要的三项信息是：",
+opts:["取得成本、预计使用寿命、预计残值","市价、税率、利率","收入、成本、利润","原值、公允价值、重置成本"],ans:[0],
+exp:"折旧三要素：<b>取得成本、预计使用寿命（估计）、预计残值（估计）</b>。"},
+
+{sec:"8.3",type:"single",q:"累计折旧在报表中的列报与“账面净值”的关系是：",
+opts:["累计折旧是负债；账面净值=成本+累计折旧","累计折旧是资产备抵账户；账面净值=取得成本−累计折旧","累计折旧计入利润表","账面净值=市场价值"],ans:[1],
+exp:"<b>累计折旧</b>是资产<b>备抵账户</b>，从资产成本中扣减；<b>账面净值=取得成本−累计折旧</b>。当期折旧费用则进利润表。"},
+
+{sec:"8.3",type:"calc",q:"直线法：设备成本 $62,500，残值 $2,500，使用寿命 3 年。每年折旧费用为：",
+opts:["$20,000","$20,833","$21,000","$18,750"],ans:[0],
+exp:"直线法 = (成本−残值) ÷ 寿命 = (62,500−2,500) ÷ 3 = <b>$20,000/年</b>，各年相等。"},
+
+{sec:"8.3",type:"table",q:"直线法折旧计划：成本 $62,500，残值 $2,500，使用寿命 3 年。补全下表（单位：美元，可不写逗号）：",
+hint:"取得时只填账面净值；每年折旧费用相等。",
+headers:["年份","折旧费用","累计折旧","账面净值"],
+rows:[
+ ["取得时","—","—",{a:["62500","62,500"]}],
+ ["第1年",{a:["20000","20,000"]},{a:["20000","20,000"]},{a:["42500","42,500"]}],
+ ["第2年",{a:["20000","20,000"]},{a:["40000","40,000"]},{a:["22500","22,500"]}],
+ ["第3年",{a:["20000","20,000"]},{a:["60000","60,000"]},{a:["2500","2,500"]}]
+],
+exp:"年折旧=(62,500−2,500)/3=<b>20,000</b>。累计折旧逐年+20,000（20,000→40,000→60,000）；账面净值逐年−20,000（62,500→42,500→22,500→2,500），第3年末恰好等于残值 2,500。"},
+
+{sec:"8.3",type:"single",q:"工作量法的折旧公式是：",
+opts:["(成本−残值) ÷ 预计总工作量 × 实际工作量","(成本−残值) ÷ 使用寿命","(成本−累计折旧) × 2 ÷ 寿命","成本 × 工作量比率"],ans:[0],
+exp:"<b>工作量法 = (成本−残值) ÷ 预计总工作量 × 实际工作量</b>，各期折旧随工作量变动。"},
+
+{sec:"8.3",type:"calc",q:"双倍余额递减法：成本 $62,500，残值 $2,500，寿命 3 年。第 1 年折旧费用约为（直线率的两倍=2/3）：",
+opts:["$41,667","$20,000","$13,889","$25,000"],ans:[0],
+exp:"双倍率 = 2 ÷ 3；第1年 = (成本−累计折旧) × 2/3 = (62,500−0) × 2/3 ≈ <b>$41,667</b>。注意：DDB 公式用<b>累计折旧</b>而非残值，且账面净值不得折到低于残值。"},
+
+{sec:"8.3",type:"single",q:"双倍余额递减法（加速折旧）对各年报表的典型影响是：",
+opts:["每年折旧相等","前几年折旧高、净利润低；后几年折旧低、净利润高","折旧随工作量变动","折旧逐年递增"],ans:[1],
+exp:"DDB 是加速折旧：<b>前期折旧高→净利润低；后期折旧低→净利润高</b>。直线法各年相等，工作量法随产量变动。"},
+
+{sec:"8.3",type:"single",q:"以财务报告为目的，若资产各期产生的经济利益较均衡，宜选用：",
+opts:["双倍余额递减法","直线法","工作量法","MACRS"],ans:[1],
+exp:"利益均衡→<b>直线法</b>（最常用）；最初几年比加速法报告更高利润。若前期效率更高、收入更多，则选加速折旧法以配比。"},
+
+{sec:"8.3",type:"single",q:"以所得税报告为目的，多数公司用于纳税申报的折旧方法是：",
+opts:["直线法","MACRS（修正加速成本回收系统）","工作量法","具体辨认法"],ans:[1],
+exp:"纳税申报遵循“<b>最少最迟原则</b>”，多数公司用税法允许的 <b>MACRS</b>（类似余额递减、前期高折旧），降低应纳税所得额。MACRS 不用于财务报告。"},
+
+/* ===== 8.4 ===== */
+{sec:"8.4",type:"single",q:"长期资产减值核查的三步顺序是：",
+opts:["确认损失→识别迹象→可回收性测试","识别减值迹象→测试可回收性→确认损失","可回收性测试→确认损失→识别迹象","识别迹象→确认损失→测试"],ans:[1],
+exp:"三步：① <b>识别减值迹象</b>（市价大降/需求下降/法律变化/陈旧损坏）→② <b>测试可回收性</b>→③ <b>确认损失</b>。"},
+
+{sec:"8.4",type:"single",q:"判断长期资产“发生减值”的条件是：",
+opts:["账面净值 > 预计未来现金流量","账面净值 < 预计未来现金流量","账面净值 = 公允价值","市价 > 成本"],ans:[0],
+exp:"当<b>账面净值 > 预计未来现金流量（未来经济利益）</b>时，资产发生减值。"},
+
+{sec:"8.4",type:"calc",q:"某设备账面净值 $8,000,000，预计未来现金流量 $6,500,000（<账面，已减值），公允价值 $6,000,000。减值损失为：",
+opts:["$1,500,000","$2,000,000","$500,000","$8,000,000"],ans:[1],
+exp:"先判断：账面净值8,000,000 > 未来现金流6,500,000 → 减值。<b>减值损失 = 账面净值 − 公允价值 = 8,000,000 − 6,000,000 = $2,000,000</b>（把账面价值冲减至公允价值）。"},
+
+{sec:"8.4",type:"single",q:"固定资产处置时，处置日通常需要编制：",
+opts:["一个分录","两个分录：①更新折旧；②记录处置","三个分录","不需分录"],ans:[1],
+exp:"处置日两个分录：①编调整分录<b>更新折旧费用与累计折旧</b>；②<b>记录处置</b>（确认处置利得/损失）。"},
+
+{sec:"8.4",type:"calc",q:"出售一台设备：处置收入 $5,000,000，处置日账面价值 $3,000,000（原值 20,000,000−累计折旧 17,000,000）。处置结果为：",
+opts:["利得 $2,000,000","损失 $2,000,000","利得 $5,000,000","无利得损失"],ans:[0],
+exp:"<b>利得/损失 = 处置收入 − 账面价值 = 5,000,000 − 3,000,000 = 利得 $2,000,000</b>。"},
+
+{sec:"8.4",type:"judge",q:"【判断】固定资产处置利得或损失属于主要经营活动产生，应计入营业收入或费用。",
+opts:["正确","错误"],ans:[1],
+exp:"错。处置利得/损失由<b>次要、偶发活动</b>产生，<b>不属于</b>营业收入或费用，常在利润表单独列示。"},
+
+/* ===== 8.5 ===== */
+{sec:"8.5",type:"single",q:"自然资源（如矿藏、油田、林地）属于“递耗资产”，其成本分摊到受益期称为：",
+opts:["折旧","折耗（depletion）","摊销","减值"],ans:[1],
+exp:"自然资源随开采逐渐耗尽，其成本分摊称为<b>折耗</b>（通常用<b>产量法</b>计算）。折耗金额资本化为存货成本。"},
+
+{sec:"8.5",type:"judge",q:"【判断】自然资源的折耗金额应先资本化（记为存货成本的一部分），待存货出售时再作为费用扣除。",
+opts:["正确","错误"],ans:[0],
+exp:"对。折耗先<b>资本化为存货成本</b>（借 存货、贷 自然资源/累计折耗）；当存货出售时，相应成本作为费用从收入中扣除。"},
+
+{sec:"8.5",type:"multi",q:"【多选】无形资产的关键特性包括：",
+opts:["没有实物形态","可辨认性（可与企业分离或源自合同权利）","未来经济利益具有不确定性","必然有活跃市场报价"],ans:[0,1,2],
+exp:"无形资产：<b>非实物性、可辨认性、未来经济利益不确定性</b>。并非都有活跃市价。"},
+
+{sec:"8.5",type:"single",q:"关于无形资产的会计处理，正确的是：",
+opts:["外购按历史成本入账；内部研发支出发生时费用化","外购与内部研发都资本化","一律费用化","一律按公允价值入账"],ans:[0],
+exp:"<b>外购</b>无形资产按历史成本（购价+直接相关费用）入账；<b>内部研发</b>支出在发生时<b>费用化</b>（GAAP）。"},
+
+{sec:"8.5",type:"single",q:"有限寿命与无限寿命无形资产的后续计量差异是：",
+opts:["都按直线法摊销","有限寿命直线法摊销；无限寿命不摊销、每年至少做一次减值测试","都不摊销","都只做减值测试"],ans:[1],
+exp:"<b>有限寿命</b>：直线法摊销（残值通常假设0）。<b>无限寿命</b>：<b>不摊销</b>，但<b>每年至少减值测试一次</b>。"},
+
+{sec:"8.5",type:"calc",q:"一项专利成本 $800,000，使用寿命 20 年，直线法、残值为 0。一年的摊销费用为：",
+opts:["$40,000","$80,000","$20,000","$400,000"],ans:[0],
+exp:"年摊销 = 800,000 ÷ 20 = <b>$40,000</b>。分录：借 专利摊销费用 40,000，贷 专利权(或累计摊销) 40,000。"},
+
+{sec:"8.5",type:"single",q:"关于“商誉”，正确的是：",
+opts:["内部自创商誉也可确认","仅在企业并购时确认，不摊销，每年强制减值测试","按直线法摊销","可随意调增"],ans:[1],
+exp:"<b>商誉仅在并购时确认</b>（=收购对价−可辨认净资产公允价值），内部自创不得确认；<b>不摊销</b>，每年<b>强制减值测试</b>。"},
+
+{sec:"8.5",type:"judge",q:"【判断】由于未来收益不确定，研发（R&D）成本按 GAAP 不得资本化为无形资产，应作为费用记入损益表。",
+opts:["正确","错误"],ans:[0],
+exp:"对。GAAP 下 <b>R&D 成本费用化</b>。（注：内部研发专利仅<b>注册费、法律费</b>可资本化。）"},
+
+{sec:"8.5",type:"single",q:"间接法编现金流量表时，折旧费用为何要加回净利润？",
+opts:["折旧是现金流入来源","折旧是非现金费用，减少了净利润却不涉及现金流出，故需加回","折旧属于投资活动","折旧增加现金"],ans:[1],
+exp:"折旧是<b>非现金费用</b>：它在净利润里减过，但并未实际流出现金，所以间接法下要<b>加回</b>。（但税务折旧会通过减税影响现金流。）"},
+
+{sec:"8.5",type:"calc",q:"折旧估计变更（未来适用法）：某资产当前账面净值 $64,000，重估后剩余使用寿命 4 年、新残值 $4,000。变更后每年折旧费用为：",
+opts:["$15,000","$16,000","$12,000","$14,000"],ans:[0],
+exp:"修改后折旧 = (账面净值 − 新残值) ÷ 剩余使用寿命 = (64,000 − 4,000) ÷ 4 = <b>$15,000</b>。折旧估计变更采用<b>未来适用法</b>，不追溯前期。"}
+];
+
+/* ============ 本地存储 ============ */
+const STORE_KEY="kuaiji8_v1";
+function loadStore(){try{const s=JSON.parse(localStorage.getItem(STORE_KEY));return (s&&s.sec)?s:{sec:{},wrong:[]};}catch(e){return {sec:{},wrong:[]};}}
+function saveStore(s){try{localStorage.setItem(STORE_KEY,JSON.stringify(s));}catch(e){}}
+const norm=s=>(s||"").toString().trim().replace(/[，,\s$＄]/g,"").replace(/＋/g,"+").replace(/[−－]/g,"-").replace(/[（）]/g,"").toLowerCase();
+
+/* ============ 逻辑 ============ */
+const app=document.getElementById('app');
+const foot=document.getElementById('foot');
+Q.forEach((q,i)=>q.id=i);
+document.getElementById('totalQ').textContent=Q.length;
+
+let pool=[],idx=0,score=0,wrong=[],picks=[],curMode='',sessRight=[],sessWrong=[];
+
+function counts(){const c={};Q.forEach(q=>c[q.sec]=(c[q.sec]||0)+1);return c;}
+
+function renderStart(){
+  foot.classList.remove('hidden');
+  const c=counts(), store=loadStore();
+  let html='<div class="card"><p class="lead">点一个章节开始刷题。每答完一题立即出对错和解析——<b>错题自动进错题本</b>，下次打开仍在。计算题与表格填空都已并入。</p><div class="sec-list">';
+  html+=`<button class="sec-btn all-btn" data-sec="ALL"><span class="sec-no">全</span><span class="sec-meta"><span class="sec-title">全章随机刷（${Q.length}题）</span><span class="sec-desc">打乱顺序，模拟考试</span></span><span class="sec-right"><span class="sec-count">${Q.length}</span></span></button>`;
+  for(const s in SECTIONS){
+    const b=store.sec[s]&&typeof store.sec[s].best==='number'?`<span class="sec-badge">最佳 ${store.sec[s].best}%</span>`:'';
+    html+=`<button class="sec-btn" data-sec="${s}"><span class="sec-no">${s}</span><span class="sec-meta"><span class="sec-title">${SECTIONS[s]}</span><span class="sec-desc">${SEC_DESC[s]||''}</span></span><span class="sec-right"><span class="sec-count">${c[s]||0}题</span>${b}</span></button>`;
+  }
+  if(store.wrong&&store.wrong.length){
+    html+=`<button class="sec-btn wrong-btn" data-sec="SAVED_WRONG"><span class="sec-no">错</span><span class="sec-meta"><span class="sec-title">错题本（${store.wrong.length}题）</span><span class="sec-desc">只刷做错过的题，答对后自动移出</span></span><span class="sec-right"><span class="sec-count">${store.wrong.length}</span></span></button>`;
+  }
+  html+='</div><button class="reset-link" id="resetBtn">清空本机所有记录</button></div>';
+  app.innerHTML=html;
+  app.querySelectorAll('.sec-btn').forEach(b=>b.onclick=()=>start(b.dataset.sec));
+  const rb=document.getElementById('resetBtn');
+  rb.onclick=()=>{ if(confirm('确定清空本机所有做题记录（最佳成绩+错题本）吗？不可恢复。')){ saveStore({sec:{},wrong:[]}); renderStart(); } };
+}
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function start(sec){
+  curMode=sec;
+  if(sec==='ALL') pool=shuffle(Q);
+  else if(sec==='WRONG') pool=wrong.slice();
+  else if(sec==='SAVED_WRONG'){const w=loadStore().wrong||[];pool=shuffle(Q.filter(q=>w.includes(q.id)));}
+  else pool=shuffle(Q.filter(q=>q.sec===sec));
+  if(!pool.length){renderStart();return;}
+  idx=0;score=0;wrong=[];sessRight=[];sessWrong=[];
+  foot.classList.add('hidden');
+  renderQ();
+}
+
+function typeTag(t){
+  if(t==='multi')return '<span class="tag multi">多选</span>';
+  if(t==='judge')return '<span class="tag judge">判断</span>';
+  if(t==='calc')return '<span class="tag calc">计算</span>';
+  if(t==='table')return '<span class="tag fill">表格填空</span>';
+  return '<span class="tag">单选</span>';
+}
+
+function frame(inner){
+  const pct=Math.round(idx/pool.length*100);
+  return `
+    <div class="topbar">
+      <span class="pill">第 <b>${idx+1}</b> / ${pool.length} 题</span>
+      <span class="pill">✓ <b>${score}</b></span>
+      <button class="quit" id="quitBtn">退出</button>
+    </div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div class="card">${inner}</div>`;
+}
+
+function renderQ(){
+  const q=pool[idx];picks=[];
+  if(q.type==='table'){return renderTable(q);}
+  const letters=['A','B','C','D','E','F'];
+  let opts='';
+  q.opts.forEach((o,i)=>{opts+=`<button class="opt" data-i="${i}"><span class="mk">${letters[i]}</span><span class="otext">${o}</span></button>`;});
+  const isMulti=q.type==='multi';
+  app.innerHTML=frame(`
+      <div class="qhead">${typeTag(q.type)}<span class="secref">§${q.sec} ${SECTIONS[q.sec]}</span></div>
+      <div class="qtext">${q.q}</div>
+      <div class="opts" id="opts">${opts}</div>
+      <div class="fb" id="fb"></div>
+      <button class="btn" id="confirm" ${isMulti?'disabled':''} style="${isMulti?'':'display:none'}">确认作答</button>
+      <button class="btn hidden" id="next">${idx+1<pool.length?'下一题 →':'查看结果'}</button>`);
+  document.getElementById('quitBtn').onclick=renderStart;
+  [...app.querySelectorAll('.opt')].forEach(el=>el.onclick=()=>{
+    if(el.classList.contains('locked'))return;
+    const i=+el.dataset.i;
+    if(isMulti){
+      if(picks.includes(i)){picks=picks.filter(x=>x!==i);el.classList.remove('sel');}
+      else{picks.push(i);el.classList.add('sel');}
+      document.getElementById('confirm').disabled=picks.length===0;
+    }else{picks=[i];grade();}
+  });
+  if(isMulti)document.getElementById('confirm').onclick=grade;
+}
+
+function renderTable(q){
+  let thead='<tr>'+q.headers.map(h=>`<th>${h}</th>`).join('')+'</tr>';
+  let body='';
+  q.rows.forEach((r,ri)=>{
+    body+='<tr>';
+    r.forEach((cell,ci)=>{
+      if(cell&&typeof cell==='object'){body+=`<td><input class="tin" data-r="${ri}" data-c="${ci}" placeholder="?" inputmode="text"></td>`;}
+      else body+=`<td>${cell}</td>`;
+    });
+    body+='</tr>';
+  });
+  app.innerHTML=frame(`
+      <div class="qhead">${typeTag(q.type)}<span class="secref">§${q.sec} ${SECTIONS[q.sec]}</span></div>
+      <div class="qtext">${q.q}</div>
+      <div class="tablewrap"><table class="qtable"><thead>${thead}</thead><tbody>${body}</tbody></table></div>
+      <div class="hint">${q.hint||'填好后点确认。数字可不写逗号/$，文字按括号内任一写法均可。'}</div>
+      <div class="fb" id="fb"></div>
+      <button class="btn" id="confirm">确认作答</button>
+      <button class="btn hidden" id="next">${idx+1<pool.length?'下一题 →':'查看结果'}</button>`);
+  document.getElementById('quitBtn').onclick=renderStart;
+  document.getElementById('confirm').onclick=gradeTable;
+}
+
+function afterGrade(correct){
+  const q=pool[idx];
+  if(correct){score++;sessRight.push(q.id);} else {wrong.push(q);sessWrong.push(q.id);}
+  const nx=document.getElementById('next');nx.classList.remove('hidden');
+  nx.onclick=()=>{idx++; idx<pool.length?renderQ():renderResult();};
+}
+
+function grade(){
+  const q=pool[idx];const letters=['A','B','C','D','E','F'];
+  const correct=q.ans.slice().sort().join(',')===picks.slice().sort().join(',');
+  app.querySelectorAll('.opt').forEach(el=>{
+    const i=+el.dataset.i;el.classList.add('locked');el.classList.remove('sel');
+    if(q.ans.includes(i))el.classList.add('correct');
+    else if(picks.includes(i))el.classList.add('wrong');
+  });
+  const fb=document.getElementById('fb');
+  const ansStr=q.ans.map(i=>letters[i]).join('、');
+  fb.className='fb show '+(correct?'ok':'no');
+  fb.innerHTML=`<div class="verdict">${correct?'✓ 答对了':'✗ 答错了'}<span class="ans">　正确答案：${ansStr}</span></div><div class="exp">${q.exp}</div>`;
+  const cf=document.getElementById('confirm');if(cf)cf.style.display='none';
+  afterGrade(correct);
+  fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function gradeTable(){
+  const q=pool[idx];let allok=true;
+  q.rows.forEach((r,ri)=>r.forEach((cell,ci)=>{
+    if(cell&&typeof cell==='object'){
+      const el=app.querySelector(`.tin[data-r="${ri}"][data-c="${ci}"]`);
+      const got=norm(el.value);
+      const ok=cell.a.some(a=>norm(a)===got);
+      el.disabled=true;el.classList.add(ok?'tok':'tno');
+      if(!ok){allok=false;el.value=cell.a[0];}
+    }
+  }));
+  const fb=document.getElementById('fb');
+  fb.className='fb show '+(allok?'ok':'no');
+  fb.innerHTML=`<div class="verdict">${allok?'✓ 全部正确':'✗ 有空填错了（已用绿/红标出，错处已填上正确答案）'}</div><div class="exp">${q.exp}</div>`;
+  document.getElementById('confirm').style.display='none';
+  afterGrade(allok);
+  fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function persist(){
+  const store=loadStore();
+  const total=pool.length, pct=Math.round(score/total*100);
+  if(/^\d/.test(curMode)){ // 单章模式才记最佳成绩
+    const prev=store.sec[curMode]&&store.sec[curMode].best||0;
+    store.sec[curMode]={best:Math.max(prev,pct)};
+  }
+  const w=new Set(store.wrong||[]);
+  sessRight.forEach(id=>w.delete(id));
+  sessWrong.forEach(id=>w.add(id));
+  store.wrong=[...w];
+  saveStore(store);
+}
+
+function renderResult(){
+  persist();
+  const total=pool.length, pct=Math.round(score/total*100);
+  let verdict;
+  if(pct>=90)verdict='稳了，这部分基本拿下 ✦';
+  else if(pct>=75)verdict='不错，把错题再过一遍就很扎实了';
+  else if(pct>=60)verdict='及格线上，错题别放过，重点补一补';
+  else verdict='概念还没串起来，建议对着错题回去翻书再刷一轮';
+  let html=`<div class="card">
+      <div class="score-num">${score}<span> / ${total}</span></div>
+      <div class="score-label">正确率 ${pct}%</div>
+      <div class="verdict-line">${verdict}</div>`;
+  if(wrong.length)html+=`<button class="btn" id="redoWrong">立刻重刷本轮错题（${wrong.length}）</button>`;
+  html+=`<button class="btn ghost" id="backHome">返回章节选择</button>`;
+  if(wrong.length){
+    html+=`<div class="review-h">错题回顾 · ${wrong.length} 题</div>`;
+    const letters=['A','B','C','D','E','F'];
+    wrong.forEach(q=>{
+      let ansLine;
+      if(q.type==='table'){ansLine='见下方解析中的正确填法';}
+      else ansLine=q.ans.map(i=>letters[i]+'. '+q.opts[i]).join('；');
+      html+=`<div class="rev-item"><div class="rev-q">${typeTag(q.type)} ${q.q}</div><div class="rev-line"><span class="c">正确：${ansLine}</span></div><div class="rev-exp">${q.exp}</div></div>`;
+    });
+  }
+  html+=`</div>`;
+  app.innerHTML=html;
+  const rw=document.getElementById('redoWrong');if(rw)rw.onclick=()=>start('WRONG');
+  document.getElementById('backHome').onclick=renderStart;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+renderStart();
+</script>
+</body>
+</html>
