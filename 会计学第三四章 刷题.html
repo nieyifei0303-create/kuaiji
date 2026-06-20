@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会计学 · 第三四章 刷题</title>
+<style>
+  :root{
+    --paper:#EEF0EC;
+    --card:#FBFBF8;
+    --ink:#16323C;
+    --ink-soft:#42565d;
+    --line:#d7dcd6;
+    --gold:#C0922B;
+    --gold-soft:#f3ead0;
+    --green:#1E7A52;
+    --green-bg:#e3f1e8;
+    --red:#C0392B;
+    --red-bg:#f7e4e1;
+    --shadow:0 1px 2px rgba(20,50,60,.06),0 8px 24px rgba(20,50,60,.06);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.65;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:18px 16px 60px;}
+
+  header{margin:8px 2px 18px;border-bottom:2px solid var(--ink);padding-bottom:12px;}
+  .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700;font-family:Georgia,"Times New Roman",serif;}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:25px;margin:4px 0 2px;font-weight:700;letter-spacing:-.01em;}
+  .sub{font-size:13px;color:var(--ink-soft);}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:18px;margin-bottom:14px;}
+
+  .lead{font-size:14.5px;color:var(--ink-soft);margin:0 0 16px;}
+  .sec-list{display:flex;flex-direction:column;gap:10px;}
+  .sec-btn{
+    display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+    font:inherit;color:var(--ink);transition:.15s;box-shadow:var(--shadow);
+  }
+  .sec-btn:hover,.sec-btn:active{border-color:var(--ink);transform:translateY(-1px);}
+  .sec-no{font-family:Georgia,serif;font-size:19px;font-weight:700;color:var(--gold);min-width:34px;}
+  .sec-meta{flex:1;}
+  .sec-title{font-weight:600;font-size:15.5px;}
+  .sec-desc{font-size:12.5px;color:var(--ink-soft);margin-top:1px;}
+  .sec-right{text-align:right;white-space:nowrap;}
+  .sec-count{font-size:12px;color:var(--ink-soft);font-family:Georgia,serif;}
+  .sec-badge{display:block;font-family:Georgia,serif;font-size:11px;color:#fff;background:var(--green);border-radius:10px;padding:1px 8px;margin-top:4px;}
+  .all-btn{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .all-btn .sec-no,.all-btn .sec-count{color:#d9c89a;}
+  .all-btn .sec-desc{color:#b7c4c1;}
+  .wrong-btn{background:var(--red-bg);border-color:#eccac4;}
+  .wrong-btn .sec-no{color:var(--red);}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:12px;}
+  .pill{font-family:Georgia,serif;font-size:13px;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px 12px;}
+  .pill b{color:var(--ink);}
+  .quit{background:none;border:none;color:var(--ink-soft);font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;padding:4px;}
+  .bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:16px;}
+  .bar > i{display:block;height:100%;background:var(--gold);border-radius:6px;transition:width .35s ease;}
+
+  .qhead{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:6px;background:var(--gold-soft);color:#8a6a16;}
+  .tag.multi{background:#e4ecf3;color:#2a5572;}
+  .tag.judge{background:#eae6f0;color:#5b4a78;}
+  .tag.calc{background:#fbe6d9;color:#9a4f1c;}
+  .tag.fill{background:#dde9e3;color:#1a6b4f;}
+  .secref{font-family:Georgia,serif;font-size:12px;color:var(--ink-soft);}
+  .qtext{font-size:17px;font-weight:600;margin:2px 0 16px;line-height:1.55;}
+  .qtext .blank{border-bottom:1.5px solid var(--gold);padding:0 22px;}
+
+  .opts{display:flex;flex-direction:column;gap:9px;}
+  .opt{
+    display:flex;gap:11px;align-items:flex-start;cursor:pointer;
+    border:1px solid var(--line);border-radius:11px;padding:12px 14px;font:inherit;
+    background:#fff;text-align:left;color:var(--ink);transition:.12s;width:100%;
+  }
+  .opt:hover{border-color:var(--ink-soft);}
+  .opt .mk{
+    font-family:Georgia,serif;font-weight:700;font-size:14px;min-width:22px;height:22px;
+    border:1.5px solid var(--ink-soft);border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:var(--ink-soft);flex-shrink:0;margin-top:1px;
+  }
+  .opt.sel{border-color:var(--ink);background:#f0f3f0;}
+  .opt.sel .mk{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .opt.correct{border-color:var(--green);background:var(--green-bg);}
+  .opt.correct .mk{background:var(--green);color:#fff;border-color:var(--green);}
+  .opt.wrong{border-color:var(--red);background:var(--red-bg);}
+  .opt.wrong .mk{background:var(--red);color:#fff;border-color:var(--red);}
+  .opt.locked{cursor:default;}
+  .otext{flex:1;font-size:15px;line-height:1.5;}
+
+  /* table fill */
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:2px 0 4px;border-radius:10px;}
+  table.qtable{border-collapse:collapse;width:100%;font-size:13.5px;}
+  table.qtable th,table.qtable td{border:1px solid var(--line);padding:8px 8px;text-align:center;}
+  table.qtable th{background:var(--ink);color:#fff;font-weight:600;font-size:12.5px;}
+  table.qtable td:first-child{text-align:left;font-weight:600;background:#f4f5f1;white-space:nowrap;}
+  input.tin{font-family:Georgia,serif;font-size:14px;width:74px;text-align:center;border:none;border-bottom:1.5px solid var(--gold);background:#fff;padding:4px 2px;color:var(--ink);border-radius:3px 3px 0 0;}
+  input.tin:focus{outline:none;border-bottom-color:var(--ink);background:#fffef8;}
+  input.tin.tok{border-bottom-color:var(--green);background:var(--green-bg);color:var(--green);font-weight:700;}
+  input.tin.tno{border-bottom-color:var(--red);background:var(--red-bg);color:var(--red);font-weight:700;}
+  .hint{font-size:12px;color:var(--ink-soft);margin:9px 2px 2px;}
+
+  .fb{margin-top:15px;border-radius:11px;padding:13px 15px;font-size:14.5px;display:none;border:1px solid;}
+  .fb.show{display:block;}
+  .fb.ok{background:var(--green-bg);border-color:#bfe0cd;}
+  .fb.no{background:var(--red-bg);border-color:#eccac4;}
+  .fb .verdict{font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .fb.ok .verdict{color:var(--green);}
+  .fb.no .verdict{color:var(--red);}
+  .fb .ans{font-family:Georgia,serif;font-weight:700;}
+  .fb .exp{color:var(--ink);line-height:1.6;}
+  .fb .exp b{color:var(--ink);}
+
+  .btn{
+    display:block;width:100%;margin-top:14px;cursor:pointer;border:none;font:inherit;
+    background:var(--ink);color:#fff;font-weight:600;font-size:16px;border-radius:11px;padding:14px;transition:.15s;
+  }
+  .btn:hover{background:#0f262e;}
+  .btn:disabled{background:#b9c3c0;cursor:not-allowed;}
+  .btn.ghost{background:none;color:var(--ink);border:1.5px solid var(--ink);}
+  .btn.ghost:hover{background:#f0f3f0;}
+
+  .score-num{font-family:Georgia,serif;font-size:54px;font-weight:700;line-height:1;color:var(--ink);text-align:center;margin:6px 0 2px;}
+  .score-num span{font-size:24px;color:var(--ink-soft);}
+  .score-label{text-align:center;color:var(--ink-soft);font-size:14px;margin-bottom:16px;}
+  .verdict-line{text-align:center;font-size:16px;font-weight:600;margin-bottom:18px;padding:10px;border-radius:10px;background:var(--gold-soft);color:#8a6a16;}
+  .review-h{font-family:Georgia,serif;font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);border-bottom:1px solid var(--line);padding-bottom:7px;margin:22px 0 12px;}
+  .rev-item{border-left:3px solid var(--red);padding:4px 0 4px 13px;margin-bottom:16px;}
+  .rev-q{font-size:14.5px;font-weight:600;margin-bottom:5px;}
+  .rev-line{font-size:13.5px;color:var(--ink-soft);}
+  .rev-line .c{color:var(--green);font-weight:600;}
+  .rev-exp{font-size:13px;color:var(--ink-soft);margin-top:5px;background:#f4f5f1;border-radius:8px;padding:8px 11px;}
+  .reset-link{display:inline-block;margin:6px 2px 0;color:var(--ink-soft);font-size:12.5px;text-decoration:underline;cursor:pointer;background:none;border:none;font:inherit;}
+  footer{text-align:center;font-size:12px;color:#9aa6a2;margin-top:24px;font-family:Georgia,serif;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Financial Accounting · Ch.3-4</div>
+    <h1>经营决策与利润表 · 调整与收益质量</h1>
+    <div class="sub">权责发生制+递延计提 · 计算题已并入 · 每题带解析 · 记录存本机</div>
+  </header>
+
+  <div id="app"></div>
+
+  <footer id="foot">选一个章节开始 · 共 <span id="totalQ"></span> 题 · 记录已存在本机</footer>
+</div>
+
+<script>
+/* ============ 题库 ============ */
+const SECTIONS = {
+  "3.1":"经营周期与会计分期",
+  "3.2":"利润表要素与格式",
+  "3.3":"确认与计量（收付制/权责制）",
+  "3.4":"完整经济业务分析模型",
+  "4.1":"调整：递延与计提",
+  "4.2":"调整后报表与报表关系",
+  "4.3":"结账与收益质量"
+};
+const SEC_DESC = {
+  "3.1":"经营周期 · 会计分期 · 确认与计量问题",
+  "3.2":"营业收入/费用 · 收入vs利得 · 支出vs费用 · EPS",
+  "3.3":"现金收付制 vs 权责发生制 · 收入五步 · 配比原则",
+  "3.4":"A/L/SE/R/E 五要素 · 收入费用对SE · 总资产周转率",
+  "4.1":"显性/隐性 · 预付/预收/应计费用/应计收入",
+  "4.2":"三种试算表 · 报表编制顺序 · 永久/临时账户",
+  "4.3":"结账 · 临时账户清零 · 净利润率"
+};
+const Q = [
+/* ===== 3.1 ===== */
+{sec:"3.1",type:"single",q:"“经营周期”是指：",
+opts:["从付现购买存货开始，到销售货物/提供劳务收回现金所需的时间周期","一个日历年度","从注册到上市的时间","从期初到期末编报的时间"],ans:[0],
+exp:"经营周期=从<b>付现购存货</b>到<b>收现（销货/提供劳务）</b>所需的时间周期。"},
+
+{sec:"3.1",type:"single",q:"“会计分期假设”的含义是：",
+opts:["把较长的经营寿命人为划分为相对较短的时间段（月/季/年）来报告","假设企业永续经营","以本国货币计量","按历史成本入账"],ans:[0],
+exp:"<b>会计分期假设</b>：把长经营期划分为短时段报告，由此引出<b>确认问题</b>（何时记）与<b>计量问题</b>（记多少）。"},
+
+{sec:"3.1",type:"single",q:"会计分期带来的两个核心问题是：",
+opts:["确认问题与计量问题","收入问题与费用问题","资产问题与负债问题","内部与外部问题"],ans:[0],
+exp:"两个问题：<b>确认问题</b>（何时确认经营活动影响）与<b>计量问题</b>（应确认多少金额）。"},
+
+/* ===== 3.2 ===== */
+{sec:"3.2",type:"single",q:"“营业收入”的定义是：",
+opts:["持续经营期内导致资产增加或负债减少的经济利益总流入（销货/提供劳务产生）","非日常活动产生的利益流入","任何现金流入","期末资产总额"],ans:[0],
+exp:"营业收入=<b>持续经营</b>期内导致资产增加/负债偿还的经济利益<b>总流入</b>，由销售商品和提供劳务产生。"},
+
+{sec:"3.2",type:"single",q:"“收入”与“利得”的区别是：",
+opts:["收入来自日常核心经营活动；利得来自非日常活动","二者相同","利得来自日常活动","收入只指现金"],ans:[0],
+exp:"<b>收入</b>=日常核心经营活动的利益流入；<b>利得</b>=非日常活动的利益流入。"},
+
+{sec:"3.2",type:"single",q:"关于“支出（expenditures）”与“费用（expenses）”：",
+opts:["支出是为任何目的产生的现金流出，并非所有支出都是费用","支出等于费用","费用必然立即支付现金","费用只在付现时确认"],ans:[0],
+exp:"<b>支出≠费用</b>：支出是任何目的的现金流出；费用是为取得本期收入而发生的资产减少/负债增加。"},
+
+{sec:"3.2",type:"single",q:"利息收入、利息费用、利得与损失通常归入利润表的：",
+opts:["其他项目（非核心经营活动）","营业收入","营业费用","所得税费用"],ans:[0],
+exp:"由<b>核心持续经营以外</b>的活动产生的收入/费用归为<b>其他项目</b>，如利息收入、利息费用、利得、损失。"},
+
+{sec:"3.2",type:"single",q:"利润表中“所得税费用”列示的位置是：",
+opts:["在税前利润之后、净利润之前（最后扣除）","在营业收入之前","与营业费用并列","在每股收益之后"],ans:[0],
+exp:"格式：营业收入−营业费用=营业利润；±其他项目=税前利润；<b>−所得税费用（最后）</b>=净利润。"},
+
+{sec:"3.2",type:"calc",q:"收入总计 $1,001,000，费用总计（不含所得税）$903,000。营业利润（营业收入−营业费用）为：",
+opts:["$98,000","$96,000","$63,000","$1,904,000"],ans:[0],
+exp:"营业利润 = 1,001,000 − 903,000 = <b>$98,000</b>（再±其他项目得税前利润，再减所得税得净利润）。"},
+
+{sec:"3.2",type:"calc",q:"某公司净利润 $862，发行在外的平均普通股 1,500 股。每股收益（EPS）为：",
+opts:["$0.57","$1.72","$0.86","$1.96"],ans:[0],
+exp:"<b>EPS = 净利润 ÷ 平均普通股股数 = 862 ÷ 1,500 ≈ $0.57</b>。"},
+
+/* ===== 3.3 ===== */
+{sec:"3.3",type:"single",q:"关于“现金收付制（收付实现制）”，正确的是：",
+opts:["只在实际收/付现金时确认收入和费用；GAAP 不允许对外报告使用","按权利责任发生确认","是 GAAP 要求的方法","能准确匹配收入与费用"],ans:[0],
+exp:"<b>现金收付制</b>：收现确认收入、付现确认费用，不考虑归属期；可能无法匹配收入费用，<b>GAAP 不允许</b>对外使用。"},
+
+{sec:"3.3",type:"single",q:"GAAP 要求对外报告采用的会计基础是：",
+opts:["权责发生制","现金收付制","混合制","税法基础"],ans:[0],
+exp:"<b>权责发生制</b>以权利/责任的发生决定收入费用归属期，是 GAAP 要求的对外报告基础。"},
+
+{sec:"3.3",type:"single",q:"收入确认的<b>关键时点</b>是：",
+opts:["商品或服务交付之时","从客户处收到现金之时","签订合同之时","开具发票之时"],ans:[0],
+exp:"收入在<b>商品/服务交付（履约义务履行）</b>时确认，而非收到现金时。"},
+
+{sec:"3.3",type:"single",q:"收入确认五步法的第一步是：",
+opts:["确定公司与客户之间的合同","识别履约义务","确定交易价格","分摊交易价格"],ans:[0],
+exp:"五步：确定合同→识别履约义务→确定交易价格→分摊交易价格→履约义务履行时确认收入。"},
+
+{sec:"3.3",type:"single",q:"“费用确认原则（配比原则）”要求：",
+opts:["费用在与其相关的收入确认的同一期间确认，不论现金何时收付","费用在付现时确认","费用一律期末统一确认","费用与收入无关"],ans:[0],
+exp:"<b>配比原则</b>：费用在与相关收入<b>同期</b>确认（发生时即记录），不论现金何时收付。"},
+
+{sec:"3.3",type:"single",q:"将长期资产购置成本分摊到受益期间、常用直线法的过程是：",
+opts:["折旧","计提坏账","收入确认","结账"],ans:[0],
+exp:"<b>折旧</b>把长期资产成本分摊到受益期间，体现配比原则，常用<b>直线法</b>。"},
+
+/* ===== 3.4 ===== */
+{sec:"3.4",type:"single",q:"完整经济业务分析模型包含的 5 个要素是：",
+opts:["资产A、负债L、所有者权益SE、收入R、费用E","资产、负债、收入、费用、利润","借、贷、余额、日期、凭证","现金、应收、应付、收入、费用"],ans:[0],
+exp:"五要素：<b>A、L、SE、R、E</b>。收入与费用通过留存收益影响 SE。"},
+
+{sec:"3.4",type:"single",q:"关于“收入”对账户的影响，正确的是：",
+opts:["增加所有者权益和利润；随贷方增加而增加；有贷方余额","减少所有者权益；有借方余额","增加资产并减少SE","随借方增加而增加"],ans:[0],
+exp:"<b>收入</b>：增加 SE 和利润，随<b>贷方</b>增加，收入账户为<b>贷方余额</b>。"},
+
+{sec:"3.4",type:"single",q:"关于“费用”对账户的影响，正确的是：",
+opts:["减少所有者权益和利润；随借方增加而增加；有借方余额","增加SE；有贷方余额","随贷方增加而增加","与利润无关"],ans:[0],
+exp:"<b>费用</b>：减少 SE 和利润，随<b>借方</b>增加，费用账户为<b>借方余额</b>。"},
+
+{sec:"3.4",type:"single",q:"总资产周转率的计算公式是：",
+opts:["营业收入 ÷ 平均资产总额","净利润 ÷ 营业收入","营业收入 ÷ 股东权益","平均资产 ÷ 营业收入"],ans:[0],
+exp:"<b>总资产周转率 = 营业收入 ÷ 平均资产总额</b>，衡量管理层利用资产创收的能力。"},
+
+{sec:"3.4",type:"calc",q:"某公司营业收入 $1,000,000，平均资产总额 $500,000。总资产周转率为：",
+opts:["2.0 次","0.5 次","1.5 次","5.0 次"],ans:[0],
+exp:"总资产周转率 = 1,000,000 ÷ 500,000 = <b>2.0 次</b>。"},
+
+/* ===== 4.1 ===== */
+{sec:"4.1",type:"single",q:"期末编制调整分录的根本目的是：",
+opts:["解决时间性差异，使收入/费用计入正确会计期间","增加当期利润","减少所得税","核对现金"],ans:[0],
+exp:"调整目的：<b>解决时间性差异</b>，保证收入在实现时确认、费用按配比确认、资产负债按期末金额报告。"},
+
+{sec:"4.1",type:"single",q:"“隐性交易”的特点是：",
+opts:["不生成原始凭证，需期末通过调整分录体现","有原始凭证、触发日常分录","只涉及现金","不影响报表"],ans:[0],
+exp:"<b>显性交易</b>有原始凭证、触发日常分录；<b>隐性交易</b>无可见凭证，需期末<b>调整分录</b>体现。"},
+
+{sec:"4.1",type:"single",q:"“递延（deferrals）”指的情形是：",
+opts:["现金已收/付，但业务（赚取或发生）尚未发生","业务已发生，现金尚未收/付","现金与业务同时发生","只在收现时记录"],ans:[0],
+exp:"<b>递延</b>：现金流动已发生、业务未发生（预付费用=资产；预收收入=负债）。"},
+
+{sec:"4.1",type:"single",q:"“计提（accruals）”指的情形是：",
+opts:["业务已发生（已赚取/已发生），但现金尚未收/付","现金已收付、业务未发生","不需要调整","只在期初记录"],ans:[0],
+exp:"<b>计提</b>：业务已发生、现金未动（应计费用=负债；应计收入=资产）。"},
+
+{sec:"4.1",type:"single",q:"“预收收入（unearned revenue）”在资产负债表中列为：",
+opts:["负债（已收款未赚取）","资产","收入","所有者权益"],ans:[0],
+exp:"<b>预收收入</b>=已收现金但未提供商品/劳务→记为<b>负债</b>，待履约后转为收入。"},
+
+{sec:"4.1",type:"single",q:"“预付费用（prepaid expenses）”在资产负债表中列为：",
+opts:["资产（已支付未使用）","负债","费用","收入"],ans:[0],
+exp:"<b>预付费用</b>=已付现金但资源尚未消耗→记为<b>资产</b>，待消耗后转为费用。"},
+
+{sec:"4.1",type:"table",q:"填出四类调整项目的列报与到期转化（前一空填「资产」或「负债」，后一空填「费用」或「收入」）：",
+hint:"第一空填 资产/负债；第二空填 费用/收入。",
+headers:["调整项目","期末先记为","到期/履约后转为"],
+rows:[
+ ["预付费用",{a:["资产"]},{a:["费用"]}],
+ ["预收收入",{a:["负债"]},{a:["收入"]}],
+ ["应计费用",{a:["负债"]},{a:["费用"]}],
+ ["应计收入",{a:["资产"]},{a:["收入"]}]
+],
+exp:"<b>预付费用</b>：资产→费用（资源消耗）。<b>预收收入</b>：负债→收入（履约赚取）。<b>应计费用</b>：负债→费用（已发生未付）。<b>应计收入</b>：资产→收入（已赚未收）。口诀：递延先记资产/负债，计提先记负债/资产。"},
+
+{sec:"4.1",type:"single",q:"递延预收收入到期、提供商品劳务时的调整分录是：",
+opts:["借 预收收入(−L)，贷 收入(+R,+SE)","借 收入，贷 预收收入","借 现金，贷 收入","借 应收账款，贷 收入"],ans:[0],
+exp:"履约时：借 预收收入(负债↓)、贷 收入(↑)。平衡：负债减少、所有者权益增加。"},
+
+{sec:"4.1",type:"single",q:"下列哪种做法属于操纵应计/递延项目的“道德风险”？",
+opts:["将预收的现金提前记为当期已实现收入，或年末不记录应计费用","按权责发生制如实计提","期末如实摊销预付费用","披露重要会计政策"],ans:[0],
+exp:"业绩不达预期时操纵应计/递延（如<b>把预收记当期收入</b>、<b>年末不记应计费用</b>）以虚增业绩，属道德风险。"},
+
+/* ===== 4.2 ===== */
+{sec:"4.2",type:"single",q:"试算平衡表的三种形式按编制时点排列是：",
+opts:["未调整试算平衡表 → 调整后试算平衡表 → 结账后试算平衡表","结账后 → 调整后 → 未调整","调整后 → 未调整 → 结账后","只有一种"],ans:[0],
+exp:"<b>未调整</b>（调整前）→<b>调整后</b>（调整后）→<b>结账后</b>（收入费用结转留存收益后）。"},
+
+{sec:"4.2",type:"single",q:"四张报表的编制顺序通常是：",
+opts:["利润表 → 所有者权益变动表 → 资产负债表 → 现金流量表","资产负债表 → 利润表 → 现金流量表","现金流量表 → 利润表","随意顺序"],ans:[0],
+exp:"先<b>利润表</b>（得净利润）→<b>所有者权益变动表</b>（净利进留存收益）→<b>资产负债表</b>→现金流量表。"},
+
+{sec:"4.2",type:"single",q:"关于“永久性账户”与“临时性账户”，正确的是：",
+opts:["资产/负债/SE 为永久性（余额跨期保留）；收入/费用为临时性（期末清零）","收入/费用为永久性","所有账户都跨期保留","所有账户期末都清零"],ans:[0],
+exp:"<b>永久性账户</b>（A/L/SE）余额从本期末保留到下期初；<b>临时性账户</b>（R/E）仅累计本期、下期初清零。"},
+
+{sec:"4.2",type:"multi",q:"【多选】关于四张报表关系，正确的有：",
+opts:["收入减费用得利润表净利润","净利润和股利影响股东权益变动表的留存收益","股东权益是资产负债表的组成部分","净利润直接等于期末现金余额"],ans:[0,1,2],
+exp:"①收入−费用=净利润；②净利/股利→留存收益（增发新股→实收资本）；③SE 进入资产负债表。D 错。"},
+
+/* ===== 4.3 ===== */
+{sec:"4.3",type:"single",q:"“结账”的两个目的是：",
+opts:["把净损益结转入留存收益；将各临时性账户清零以便累积下期金额","增加资产；减少负债","计算所得税；编制预算","核对银行余额"],ans:[0],
+exp:"结账：①把净收益/净损失结转<b>留存收益</b>；②将<b>临时性账户清零</b>，为下期重新累积。"},
+
+{sec:"4.3",type:"single",q:"结账时，对“收入账户（贷方余额）”和“费用账户（借方余额）”的处理是：",
+opts:["收入借记结转、费用贷记结转，最终转入留存收益","收入贷记、费用借记","都贷记","都借记"],ans:[0],
+exp:"收入有<b>贷方余额→借记</b>结转；费用有<b>借方余额→贷记</b>结转；净额转入留存收益。"},
+
+{sec:"4.3",type:"judge",q:"【判断】结账只影响临时性账户与留存收益，资产和负债不受结账影响。",
+opts:["正确","错误"],ans:[0],
+exp:"对。结账时<b>资产负债不变</b>，临时账户（收入/费用）清零，净利润过入留存收益。"},
+
+{sec:"4.3",type:"single",q:"“净利润率”的计算公式是：",
+opts:["净利润 ÷ 销售净额（或营业收入）","净利润 ÷ 平均资产","销售净额 ÷ 净利润","营业利润 ÷ 净利润"],ans:[0],
+exp:"<b>净利润率 = 净利润 ÷ 销售净额（营业收入）</b>，衡量每单位收入产生多少利润。"},
+
+{sec:"4.3",type:"calc",q:"某公司净利润 $50,000，销售净额 $500,000。其净利润率为：",
+opts:["10%","20%","5%","2%"],ans:[0],
+exp:"净利润率 = 50,000 ÷ 500,000 = <b>10%</b>。"}
+];
+
+/* ============ 本地存储 ============ */
+const STORE_KEY="kuaiji34_v1";
+function loadStore(){try{const s=JSON.parse(localStorage.getItem(STORE_KEY));return (s&&s.sec)?s:{sec:{},wrong:[]};}catch(e){return {sec:{},wrong:[]};}}
+function saveStore(s){try{localStorage.setItem(STORE_KEY,JSON.stringify(s));}catch(e){}}
+const norm=s=>(s||"").toString().trim().replace(/[，,\s$＄]/g,"").replace(/＋/g,"+").replace(/[−－]/g,"-").replace(/[（）]/g,"").toLowerCase();
+
+/* ============ 逻辑 ============ */
+const app=document.getElementById('app');
+const foot=document.getElementById('foot');
+Q.forEach((q,i)=>q.id=i);
+document.getElementById('totalQ').textContent=Q.length;
+
+let pool=[],idx=0,score=0,wrong=[],picks=[],curMode='',sessRight=[],sessWrong=[];
+
+function counts(){const c={};Q.forEach(q=>c[q.sec]=(c[q.sec]||0)+1);return c;}
+
+function renderStart(){
+  foot.classList.remove('hidden');
+  const c=counts(), store=loadStore();
+  let html='<div class="card"><p class="lead">点一个章节开始刷题。每答完一题立即出对错和解析——<b>错题自动进错题本</b>，下次打开仍在。计算题与表格填空都已并入。</p><div class="sec-list">';
+  html+=`<button class="sec-btn all-btn" data-sec="ALL"><span class="sec-no">全</span><span class="sec-meta"><span class="sec-title">全章随机刷（${Q.length}题）</span><span class="sec-desc">打乱顺序，模拟考试</span></span><span class="sec-right"><span class="sec-count">${Q.length}</span></span></button>`;
+  for(const s in SECTIONS){
+    const b=store.sec[s]&&typeof store.sec[s].best==='number'?`<span class="sec-badge">最佳 ${store.sec[s].best}%</span>`:'';
+    html+=`<button class="sec-btn" data-sec="${s}"><span class="sec-no">${s}</span><span class="sec-meta"><span class="sec-title">${SECTIONS[s]}</span><span class="sec-desc">${SEC_DESC[s]||''}</span></span><span class="sec-right"><span class="sec-count">${c[s]||0}题</span>${b}</span></button>`;
+  }
+  if(store.wrong&&store.wrong.length){
+    html+=`<button class="sec-btn wrong-btn" data-sec="SAVED_WRONG"><span class="sec-no">错</span><span class="sec-meta"><span class="sec-title">错题本（${store.wrong.length}题）</span><span class="sec-desc">只刷做错过的题，答对后自动移出</span></span><span class="sec-right"><span class="sec-count">${store.wrong.length}</span></span></button>`;
+  }
+  html+='</div><button class="reset-link" id="resetBtn">清空本机所有记录</button></div>';
+  app.innerHTML=html;
+  app.querySelectorAll('.sec-btn').forEach(b=>b.onclick=()=>start(b.dataset.sec));
+  const rb=document.getElementById('resetBtn');
+  rb.onclick=()=>{ if(confirm('确定清空本机所有做题记录（最佳成绩+错题本）吗？不可恢复。')){ saveStore({sec:{},wrong:[]}); renderStart(); } };
+}
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function start(sec){
+  curMode=sec;
+  if(sec==='ALL') pool=shuffle(Q);
+  else if(sec==='WRONG') pool=wrong.slice();
+  else if(sec==='SAVED_WRONG'){const w=loadStore().wrong||[];pool=shuffle(Q.filter(q=>w.includes(q.id)));}
+  else pool=shuffle(Q.filter(q=>q.sec===sec));
+  if(!pool.length){renderStart();return;}
+  idx=0;score=0;wrong=[];sessRight=[];sessWrong=[];
+  foot.classList.add('hidden');
+  renderQ();
+}
+
+function typeTag(t){
+  if(t==='multi')return '<span class="tag multi">多选</span>';
+  if(t==='judge')return '<span class="tag judge">判断</span>';
+  if(t==='calc')return '<span class="tag calc">计算</span>';
+  if(t==='table')return '<span class="tag fill">表格填空</span>';
+  return '<span class="tag">单选</span>';
+}
+
+function frame(inner){
+  const pct=Math.round(idx/pool.length*100);
+  return `
+    <div class="topbar">
+      <span class="pill">第 <b>${idx+1}</b> / ${pool.length} 题</span>
+      <span class="pill">✓ <b>${score}</b></span>
+      <button class="quit" id="quitBtn">退出</button>
+    </div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div class="card">${inner}</div>`;
+}
+
+function renderQ(){
+  const q=pool[idx];picks=[];
+  if(q.type==='table'){return renderTable(q);}
+  const letters=['A','B','C','D','E','F'];
+  let opts='';
+  q.opts.forEach((o,i)=>{opts+=`<button class="opt" data-i="${i}"><span class="mk">${letters[i]}</span><span class="otext">${o}</span></button>`;});
+  const isMulti=q.type==='multi';
+  app.innerHTML=frame(`
+      <div class="qhead">${typeTag(q.type)}<span class="secref">§${q.sec} ${SECTIONS[q.sec]}</span></div>
+      <div class="qtext">${q.q}</div>
+      <div class="opts" id="opts">${opts}</div>
+      <div class="fb" id="fb"></div>
+      <button class="btn" id="confirm" ${isMulti?'disabled':''} style="${isMulti?'':'display:none'}">确认作答</button>
+      <button class="btn hidden" id="next">${idx+1<pool.length?'下一题 →':'查看结果'}</button>`);
+  document.getElementById('quitBtn').onclick=renderStart;
+  [...app.querySelectorAll('.opt')].forEach(el=>el.onclick=()=>{
+    if(el.classList.contains('locked'))return;
+    const i=+el.dataset.i;
+    if(isMulti){
+      if(picks.includes(i)){picks=picks.filter(x=>x!==i);el.classList.remove('sel');}
+      else{picks.push(i);el.classList.add('sel');}
+      document.getElementById('confirm').disabled=picks.length===0;
+    }else{picks=[i];grade();}
+  });
+  if(isMulti)document.getElementById('confirm').onclick=grade;
+}
+
+function renderTable(q){
+  let thead='<tr>'+q.headers.map(h=>`<th>${h}</th>`).join('')+'</tr>';
+  let body='';
+  q.rows.forEach((r,ri)=>{
+    body+='<tr>';
+    r.forEach((cell,ci)=>{
+      if(cell&&typeof cell==='object'){body+=`<td><input class="tin" data-r="${ri}" data-c="${ci}" placeholder="?" inputmode="text"></td>`;}
+      else body+=`<td>${cell}</td>`;
+    });
+    body+='</tr>';
+  });
+  app.innerHTML=frame(`
+      <div class="qhead">${typeTag(q.type)}<span class="secref">§${q.sec} ${SECTIONS[q.sec]}</span></div>
+      <div class="qtext">${q.q}</div>
+      <div class="tablewrap"><table class="qtable"><thead>${thead}</thead><tbody>${body}</tbody></table></div>
+      <div class="hint">${q.hint||'填好后点确认。数字可不写逗号/$，文字按括号内任一写法均可。'}</div>
+      <div class="fb" id="fb"></div>
+      <button class="btn" id="confirm">确认作答</button>
+      <button class="btn hidden" id="next">${idx+1<pool.length?'下一题 →':'查看结果'}</button>`);
+  document.getElementById('quitBtn').onclick=renderStart;
+  document.getElementById('confirm').onclick=gradeTable;
+}
+
+function afterGrade(correct){
+  const q=pool[idx];
+  if(correct){score++;sessRight.push(q.id);} else {wrong.push(q);sessWrong.push(q.id);}
+  const nx=document.getElementById('next');nx.classList.remove('hidden');
+  nx.onclick=()=>{idx++; idx<pool.length?renderQ():renderResult();};
+}
+
+function grade(){
+  const q=pool[idx];const letters=['A','B','C','D','E','F'];
+  const correct=q.ans.slice().sort().join(',')===picks.slice().sort().join(',');
+  app.querySelectorAll('.opt').forEach(el=>{
+    const i=+el.dataset.i;el.classList.add('locked');el.classList.remove('sel');
+    if(q.ans.includes(i))el.classList.add('correct');
+    else if(picks.includes(i))el.classList.add('wrong');
+  });
+  const fb=document.getElementById('fb');
+  const ansStr=q.ans.map(i=>letters[i]).join('、');
+  fb.className='fb show '+(correct?'ok':'no');
+  fb.innerHTML=`<div class="verdict">${correct?'✓ 答对了':'✗ 答错了'}<span class="ans">　正确答案：${ansStr}</span></div><div class="exp">${q.exp}</div>`;
+  const cf=document.getElementById('confirm');if(cf)cf.style.display='none';
+  afterGrade(correct);
+  fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function gradeTable(){
+  const q=pool[idx];let allok=true;
+  q.rows.forEach((r,ri)=>r.forEach((cell,ci)=>{
+    if(cell&&typeof cell==='object'){
+      const el=app.querySelector(`.tin[data-r="${ri}"][data-c="${ci}"]`);
+      const got=norm(el.value);
+      const ok=cell.a.some(a=>norm(a)===got);
+      el.disabled=true;el.classList.add(ok?'tok':'tno');
+      if(!ok){allok=false;el.value=cell.a[0];}
+    }
+  }));
+  const fb=document.getElementById('fb');
+  fb.className='fb show '+(allok?'ok':'no');
+  fb.innerHTML=`<div class="verdict">${allok?'✓ 全部正确':'✗ 有空填错了（已用绿/红标出，错处已填上正确答案）'}</div><div class="exp">${q.exp}</div>`;
+  document.getElementById('confirm').style.display='none';
+  afterGrade(allok);
+  fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function persist(){
+  const store=loadStore();
+  const total=pool.length, pct=Math.round(score/total*100);
+  if(/^\d/.test(curMode)){ // 单章模式才记最佳成绩
+    const prev=store.sec[curMode]&&store.sec[curMode].best||0;
+    store.sec[curMode]={best:Math.max(prev,pct)};
+  }
+  const w=new Set(store.wrong||[]);
+  sessRight.forEach(id=>w.delete(id));
+  sessWrong.forEach(id=>w.add(id));
+  store.wrong=[...w];
+  saveStore(store);
+}
+
+function renderResult(){
+  persist();
+  const total=pool.length, pct=Math.round(score/total*100);
+  let verdict;
+  if(pct>=90)verdict='稳了，这部分基本拿下 ✦';
+  else if(pct>=75)verdict='不错，把错题再过一遍就很扎实了';
+  else if(pct>=60)verdict='及格线上，错题别放过，重点补一补';
+  else verdict='概念还没串起来，建议对着错题回去翻书再刷一轮';
+  let html=`<div class="card">
+      <div class="score-num">${score}<span> / ${total}</span></div>
+      <div class="score-label">正确率 ${pct}%</div>
+      <div class="verdict-line">${verdict}</div>`;
+  if(wrong.length)html+=`<button class="btn" id="redoWrong">立刻重刷本轮错题（${wrong.length}）</button>`;
+  html+=`<button class="btn ghost" id="backHome">返回章节选择</button>`;
+  if(wrong.length){
+    html+=`<div class="review-h">错题回顾 · ${wrong.length} 题</div>`;
+    const letters=['A','B','C','D','E','F'];
+    wrong.forEach(q=>{
+      let ansLine;
+      if(q.type==='table'){ansLine='见下方解析中的正确填法';}
+      else ansLine=q.ans.map(i=>letters[i]+'. '+q.opts[i]).join('；');
+      html+=`<div class="rev-item"><div class="rev-q">${typeTag(q.type)} ${q.q}</div><div class="rev-line"><span class="c">正确：${ansLine}</span></div><div class="rev-exp">${q.exp}</div></div>`;
+    });
+  }
+  html+=`</div>`;
+  app.innerHTML=html;
+  const rw=document.getElementById('redoWrong');if(rw)rw.onclick=()=>start('WRONG');
+  document.getElementById('backHome').onclick=renderStart;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+renderStart();
+</script>
+</body>
+</html>
