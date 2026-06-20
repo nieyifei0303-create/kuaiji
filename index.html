@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会计学 · 第五章 刷题</title>
+<style>
+  :root{
+    --paper:#EEF0EC;
+    --card:#FBFBF8;
+    --ink:#16323C;
+    --ink-soft:#42565d;
+    --line:#d7dcd6;
+    --gold:#C0922B;
+    --gold-soft:#f3ead0;
+    --green:#1E7A52;
+    --green-bg:#e3f1e8;
+    --red:#C0392B;
+    --red-bg:#f7e4e1;
+    --shadow:0 1px 2px rgba(20,50,60,.06),0 8px 24px rgba(20,50,60,.06);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.65;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:18px 16px 60px;}
+
+  /* header */
+  header{margin:8px 2px 18px;border-bottom:2px solid var(--ink);padding-bottom:12px;}
+  .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700;font-family:Georgia,"Times New Roman",serif;}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:25px;margin:4px 0 2px;font-weight:700;letter-spacing:-.01em;}
+  .sub{font-size:13px;color:var(--ink-soft);}
+
+  /* cards */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:18px;margin-bottom:14px;}
+
+  /* start screen */
+  .lead{font-size:14.5px;color:var(--ink-soft);margin:0 0 16px;}
+  .sec-list{display:flex;flex-direction:column;gap:10px;}
+  .sec-btn{
+    display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+    font:inherit;color:var(--ink);transition:.15s;box-shadow:var(--shadow);
+  }
+  .sec-btn:hover,.sec-btn:active{border-color:var(--ink);transform:translateY(-1px);}
+  .sec-no{font-family:Georgia,serif;font-size:19px;font-weight:700;color:var(--gold);min-width:34px;}
+  .sec-meta{flex:1;}
+  .sec-title{font-weight:600;font-size:15.5px;}
+  .sec-desc{font-size:12.5px;color:var(--ink-soft);margin-top:1px;}
+  .sec-count{font-size:12px;color:var(--ink-soft);font-family:Georgia,serif;white-space:nowrap;}
+  .all-btn{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .all-btn .sec-no,.all-btn .sec-desc,.all-btn .sec-count{color:#d9c89a;}
+  .all-btn .sec-desc{color:#b7c4c1;}
+
+  /* progress */
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:12px;}
+  .pill{font-family:Georgia,serif;font-size:13px;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px 12px;}
+  .pill b{color:var(--ink);}
+  .quit{background:none;border:none;color:var(--ink-soft);font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;padding:4px;}
+  .bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:16px;}
+  .bar > i{display:block;height:100%;background:var(--gold);border-radius:6px;transition:width .35s ease;}
+
+  /* question */
+  .qhead{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:6px;background:var(--gold-soft);color:#8a6a16;}
+  .tag.multi{background:#e4ecf3;color:#2a5572;}
+  .tag.judge{background:#eae6f0;color:#5b4a78;}
+  .secref{font-family:Georgia,serif;font-size:12px;color:var(--ink-soft);}
+  .qtext{font-size:17px;font-weight:600;margin:2px 0 16px;line-height:1.55;}
+  .qtext .blank{border-bottom:1.5px solid var(--gold);padding:0 22px;}
+
+  .opts{display:flex;flex-direction:column;gap:9px;}
+  .opt{
+    display:flex;gap:11px;align-items:flex-start;cursor:pointer;
+    border:1px solid var(--line);border-radius:11px;padding:12px 14px;font:inherit;
+    background:#fff;text-align:left;color:var(--ink);transition:.12s;width:100%;
+  }
+  .opt:hover{border-color:var(--ink-soft);}
+  .opt .mk{
+    font-family:Georgia,serif;font-weight:700;font-size:14px;min-width:22px;height:22px;
+    border:1.5px solid var(--ink-soft);border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:var(--ink-soft);flex-shrink:0;margin-top:1px;
+  }
+  .opt.sel{border-color:var(--ink);background:#f0f3f0;}
+  .opt.sel .mk{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .opt.correct{border-color:var(--green);background:var(--green-bg);}
+  .opt.correct .mk{background:var(--green);color:#fff;border-color:var(--green);}
+  .opt.wrong{border-color:var(--red);background:var(--red-bg);}
+  .opt.wrong .mk{background:var(--red);color:#fff;border-color:var(--red);}
+  .opt.locked{cursor:default;}
+  .otext{flex:1;font-size:15px;line-height:1.5;}
+
+  /* feedback */
+  .fb{margin-top:15px;border-radius:11px;padding:13px 15px;font-size:14.5px;display:none;border:1px solid;}
+  .fb.show{display:block;}
+  .fb.ok{background:var(--green-bg);border-color:#bfe0cd;}
+  .fb.no{background:var(--red-bg);border-color:#eccac4;}
+  .fb .verdict{font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:7px;}
+  .fb.ok .verdict{color:var(--green);}
+  .fb.no .verdict{color:var(--red);}
+  .fb .ans{font-family:Georgia,serif;font-weight:700;}
+  .fb .exp{color:var(--ink);line-height:1.6;}
+  .fb .exp b{color:var(--ink);}
+
+  /* buttons */
+  .btn{
+    display:block;width:100%;margin-top:14px;cursor:pointer;border:none;font:inherit;
+    background:var(--ink);color:#fff;font-weight:600;font-size:16px;border-radius:11px;padding:14px;transition:.15s;
+  }
+  .btn:hover{background:#0f262e;}
+  .btn:disabled{background:#b9c3c0;cursor:not-allowed;}
+  .btn.ghost{background:none;color:var(--ink);border:1.5px solid var(--ink);}
+  .btn.ghost:hover{background:#f0f3f0;}
+
+  /* results */
+  .score-num{font-family:Georgia,serif;font-size:54px;font-weight:700;line-height:1;color:var(--ink);text-align:center;margin:6px 0 2px;}
+  .score-num span{font-size:24px;color:var(--ink-soft);}
+  .score-label{text-align:center;color:var(--ink-soft);font-size:14px;margin-bottom:16px;}
+  .verdict-line{text-align:center;font-size:16px;font-weight:600;margin-bottom:18px;padding:10px;border-radius:10px;background:var(--gold-soft);color:#8a6a16;}
+  .review-h{font-family:Georgia,serif;font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);border-bottom:1px solid var(--line);padding-bottom:7px;margin:22px 0 12px;}
+  .rev-item{border-left:3px solid var(--red);padding:4px 0 4px 13px;margin-bottom:16px;}
+  .rev-q{font-size:14.5px;font-weight:600;margin-bottom:5px;}
+  .rev-line{font-size:13.5px;color:var(--ink-soft);}
+  .rev-line .c{color:var(--green);font-weight:600;}
+  .rev-line .w{color:var(--red);font-weight:600;}
+  .rev-exp{font-size:13px;color:var(--ink-soft);margin-top:5px;background:#f4f5f1;border-radius:8px;padding:8px 11px;}
+  footer{text-align:center;font-size:12px;color:#9aa6a2;margin-top:24px;font-family:Georgia,serif;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Financial Accounting · Ch.5</div>
+    <h1>会计信息的传递与解释</h1>
+    <div class="sub">概念太多记不住？做一遍比看十遍管用 · 每题带解析</div>
+  </header>
+
+  <div id="app"></div>
+
+  <footer id="foot">选一个章节开始 · 共 <span id="totalQ"></span> 题</footer>
+</div>
+
+<script>
+/* ============ 题库 ============ */
+const SECTIONS = {
+  "5.1":"会计信息传递的参与者",
+  "5.2":"信息披露程序",
+  "5.3":"财务报表形式与附注",
+  "5.4":"净资产收益率(ROA)分析"
+};
+const SEC_DESC = {
+  "5.1":"监管者 / 管理层 / 审计师 / 中介 / 使用者 / 七项原则",
+  "5.2":"新闻公报 · 10-K · 10-Q · 8-K · ESG",
+  "5.3":"资产负债表 · 利润表 · 现金流量表 · 附注",
+  "5.4":"ROA · 杜邦分解 · 交易影响分析"
+};
+
+const Q = [
+/* ===================== 5.1 参与者 ===================== */
+{sec:"5.1",type:"single",q:"下列哪个机构负责保护投资者权益、维护证券市场诚信，并监督 FASB、PCAOB 和证券交易所的工作？",
+opts:["FASB（财务准则委员会）","SEC（证券交易委员会）","PCAOB（上市公司监管委员会）","证券交易所"],ans:[1],
+exp:"<b>SEC</b> 是顶层监管者，居于体系最上方，监管 FASB、PCAOB、证券交易所三家。它的核心使命是保护投资者、维护市场诚信。"},
+
+{sec:"5.1",type:"single",q:"制定普遍接受的会计原则（GAAP，即会计准则）的机构是：",
+opts:["SEC","PCAOB","FASB","证券交易所"],ans:[2],
+exp:"记口诀：<b>FASB 管会计准则（GAAP）</b>。容易和 PCAOB 混——PCAOB 管的是<b>审计</b>准则。"},
+
+{sec:"5.1",type:"single",q:"为上市公司的独立审计师（CPA）制定审计准则的机构是：",
+opts:["FASB","PCAOB（上市公司监管委员会）","SEC","董事会"],ans:[1],
+exp:"<b>PCAOB 管审计准则</b>（针对 CPA / 独立审计师）。和 FASB（会计准则）成对记忆：会计→FASB，审计→PCAOB。"},
+
+{sec:"5.1",type:"single",q:"公司治理准则由谁与州政府共同制定？",
+opts:["SEC","FASB","证券交易所","审计委员会"],ans:[2],
+exp:"<b>证券交易所</b>与州政府共同制定整套公司治理标准。三家下属机构分工：FASB=会计准则、PCAOB=审计准则、证券交易所=公司治理准则。"},
+
+{sec:"5.1",type:"multi",q:"【多选】关于 CEO 和 CFO 对财务报表的责任，下列说法正确的有：",
+opts:["他们对财务报表信息和相关披露承担主要责任","必须以个人名义对报告内容作出保证","只需保证报表，不涉及内部控制","明知造假仍保证的，可处罚款并判刑"],ans:[0,1,3],
+exp:"CEO（公司最高管理者）和 CFO（财会最高管理者）是<b>主要责任人</b>，须以<b>个人名义</b>保证。保证内容<b>包括</b>与财务报告相关的内部控制不存在重大缺陷，所以 C 错。明知造假仍保证最高可处 <b>500 万美元罚款 + 20 年有期徒刑</b>。"},
+
+{sec:"5.1",type:"single",q:"高级管理人员若明知财务报表存在虚假信息仍予以保证，可能面临的处罚是：",
+opts:["100万美元罚款 + 10年有期徒刑","500万美元罚款 + 20年有期徒刑","吊销执照并永久禁业","仅承担民事赔偿责任"],ans:[1],
+exp:"记数字：<b>500 万美元 + 20 年</b>。这是教材里少有的精确数字考点，容易出选择/填空。"},
+
+{sec:"5.1",type:"multi",q:"【多选】CEO 和 CFO 必须以个人名义对哪些事项作出保证？",
+opts:["提交的每份报告不含虚假信息、不隐瞒事实，公允反映财务状况","与财务报告相关的内部控制不存在重大缺陷","已向审计师和审计委员会披露内部控制的所有缺陷及相关舞弊","保证公司未来盈利持续增长"],ans:[0,1,2],
+exp:"三项保证：①报告真实公允、不隐瞒；②内部控制无重大缺陷；③已披露内控缺陷与舞弊。D 是对未来业绩的承诺，没人能保证，不在其列。"},
+
+{sec:"5.1",type:"single",q:"关于具体编制财务报表的会计人员，下列说法正确的是：",
+opts:["在法律上承担与 CEO 同等的主要责任","不承担任何责任","法律责任较小，但对信息准确性承担职业责任","只对董事会负责"],ans:[2],
+exp:"会计人员<b>法律责任较小</b>，但仍要对财务信息的准确性承担<b>职业责任</b>。主要法律责任在 CEO/CFO 身上。"},
+
+{sec:"5.1",type:"single",q:"董事会（含审计委员会）的产生方式是：",
+opts:["由 CEO 任命","由 SEC 指定","由股东选举产生","由审计师推荐"],ans:[2],
+exp:"董事会<b>由股东选举产生</b>，监督 CEO 及管理层，确保股东长期利益得到维护。"},
+
+{sec:"5.1",type:"multi",q:"【多选】下列属于董事会/审计委员会职能的有：",
+opts:["确保有适当流程维护公司会计与财务报告的完整性","聘请公司的独立审计师","单独与审计师会面，讨论管理层合规情况","由具有财务知识的非管理层（独立）董事构成"],ans:[0,1,2,3],
+exp:"四项全对。要点：聘请独审是<b>董事会（审计委员会）</b>的职责，且成员必须是<b>独立（非管理层）</b>且<b>懂财务</b>的董事——这样才能客观监督管理层。"},
+
+{sec:"5.1",type:"judge",q:"【判断】聘请公司的独立审计师是管理层（CEO/CFO）的职责。",
+opts:["正确","错误"],ans:[1],
+exp:"错。聘请独立审计师是<b>董事会下属审计委员会</b>的职责，而不是管理层——否则管理层就能“自己请人查自己”，失去独立性。"},
+
+{sec:"5.1",type:"single",q:"独立审计师对财务报表审计后出具的“无保留意见”，又称：",
+opts:["保留意见","清洁意见","否定意见","无法表示意见"],ans:[1],
+exp:"<b>无保留意见 = 清洁意见</b>，意味着报表在所有重大方面公允。出具清洁意见时，事务所对报表公允性承担一定经济责任。"},
+
+{sec:"5.1",type:"single",q:"审计意见对财务报表的主要意义是：",
+opts:["保证公司一定盈利","增加财务报表的可信程度，降低不实反映的风险","替代管理层编制报表","免除公司的纳税义务"],ans:[1],
+exp:"审计意见<b>增加可信程度</b>、<b>降低不实反映风险</b>。公司在与债权人、私人投资者签约时常需要这类经独立审核的报表。"},
+
+{sec:"5.1",type:"single",q:"财务分析师在其分析报告中，通常会提供以下哪类内容？",
+opts:["对未来每股收益和股价的预测，以及买入/持有/卖出建议","公司当期的完整原始凭证","审计准则的修订草案","政府税收政策的立法建议"],ans:[0],
+exp:"财务分析师属于<b>信息中介</b>，其报告通常含对未来 EPS 和股价的预测、买入/持有/卖出建议，并解释判断依据。他们通过电子信息服务商、访谈高管、实地考察、了解对手等收集信息。"},
+
+{sec:"5.1",type:"single",q:"公司向 SEC 提交各类电子格式资料所使用的系统是：",
+opts:["GAAP","EDGAR","PCAOB","ESG"],ans:[1],
+exp:"<b>EDGAR</b>（电子数据收集和检索系统）。使用者可在公司提交后 <b>24 小时内</b>在 EDGAR 网站检索到这些财务资料。"},
+
+{sec:"5.1",type:"single",q:"信息使用者一般可在公司向 SEC 提交资料后多长时间内，从 EDGAR 检索到这些财务报表？",
+opts:["1 小时内","24 小时内","7 天内","30 天内"],ans:[1],
+exp:"<b>24 小时内</b>。这是个具体数字考点，配合 EDGAR 一起记。"},
+
+{sec:"5.1",type:"multi",q:"【多选】下列属于“机构投资者”的有：",
+opts:["养老基金","共同基金","捐赠基金、慈善基金","持有大额个股的散户"],ans:[0,1,2],
+exp:"机构投资者=养老/共同/捐赠/慈善等基金，它们掌握美国上市公司<b>大部分</b>股票，且通常聘请<b>自己的</b>分析师。D 是私人投资者（散户）。"},
+
+{sec:"5.1",type:"single",q:"关于私人投资者（散户）的信息使用特点，下列说法正确的是：",
+opts:["普遍具备解读报表的专业能力","通常依靠信息中介的建议或委托机构投资者代为理财","掌握上市公司大部分股票","直接为公司制定会计准则"],ans:[1],
+exp:"散户通常<b>缺乏</b>解读报表的专业能力和收集数据的资源，因此依赖<b>信息中介的建议</b>，或委托共同基金、退休基金等机构代为理财。"},
+
+{sec:"5.1",type:"single",q:"债权人是哪类公司财务报表的主要外部使用者？",
+opts:["上市公司","非上市公司","政府机关","外资企业"],ans:[1],
+exp:"<b>债权人是非上市公司财务报表的主要外部使用者</b>。债权人包括供应商、银行、商业信贷公司，以及购买公司债券的投资者。"},
+
+{sec:"5.1",type:"single",q:'"相关性信息“指的是：',
+opts:["准确、无偏、可被独立各方证实的信息","可用来评价过去并预测未来、能影响决策的信息","同一企业各期方法基本相似的信息","不同企业方法基本相似的信息"],ans:[1],
+exp:"<b>相关性</b>：能评价过去经营、预测未来、影响使用者决策。注意区分：选项 A 是<b>可靠性</b>，C 是<b>一致性</b>，D 是<b>可比性</b>。这四个最容易混。"},
+
+{sec:"5.1",type:"single",q:'"同一企业各个时期使用的会计方法基本相似“，对应的是哪条原则？',
+opts:["可比性原则","一致性原则","相关性原则","重要性原则"],ans:[1],
+exp:"<b>一致性 = 同一企业、不同时期</b>方法相似（纵向比）。<b>可比性 = 不同企业</b>方法相似（横向比）。一字之差，靠“纵向/横向”区分。"},
+
+{sec:"5.1",type:"single",q:'"不同企业采用的会计方法基本相似“，对应的是哪条原则？',
+opts:["一致性原则","可比性原则","谨慎性原则","全面披露原则"],ans:[1],
+exp:"<b>可比性 = 不同企业之间</b>（横向）。和一致性（同一企业不同期、纵向）配对记忆。"},
+
+{sec:"5.1",type:"single",q:'会计工作必须特别注意避免“高估资产和收入、低估负债和费用”，这体现的是：',
+opts:["重要性原则","谨慎性原则","相关性原则","可靠性原则"],ans:[1],
+exp:"<b>谨慎性原则</b>：不高估资产/收入，不低估负债/费用（宁可保守）。"},
+
+{sec:"5.1",type:"single",q:"企业在核算时应区分交易或事项的重要程度，重要信息应能单独识别。这体现的是：",
+opts:["重要性原则","全面披露原则","一致性原则","可靠性原则"],ans:[0],
+exp:"<b>重要性原则</b>：区分重要程度，重要信息单独识别列报。"},
+
+/* ===================== 5.2 披露程序 ===================== */
+{sec:"5.2",type:"multi",q:"【多选】SEC 对披露流程的核心规定包括：",
+opts:["公平披露：必须公平地向所有投资者披露重要信息","禁止内幕交易：禁止基于内幕信息的股票交易","允许向大客户优先披露未公开信息","重大信息可只向机构投资者披露"],ans:[0,1],
+exp:"两条：<b>公平披露</b>（信息获取平等）+ <b>禁止内幕交易</b>。C、D 都违反“公平”原则。"},
+
+{sec:"5.2",type:"single",q:"上市公司通常在什么时点通过新闻公报公布季度和年度收益？",
+opts:["财务数据编制完成的当天立即公布","财务数据经过审计或审核后","下一财年开始时","股东大会召开后"],ans:[1],
+exp:"<b>审计/审核之后</b>才通过新闻公报公布收益，随后才是发给股东的正式报告（含 MD&A、简要利润表和资产负债表）。"},
+
+{sec:"5.2",type:"single",q:"许多公司在发布财务报告后举行公开电话会议，主要目的是：",
+opts:["让高管解答分析师和公众的问题，增加透明度和互动","替代正式年度报告","进行内幕信息交易","公布下一年度的会计准则"],ans:[0],
+exp:"电话会议让高管答疑，提升<b>透明度与互动性</b>。它是新闻公报、向股东报告之外的补充环节。"},
+
+{sec:"5.2",type:"single",q:"上市公司向 SEC 提交的“年度报告”使用的表格是：",
+opts:["10-Q","8-K","10-K","ESG 表"],ans:[2],
+exp:"<b>10-K = 年报</b>。配套记：<b>10-Q = 季报</b>，<b>8-K = 近期重大事件报告</b>。"},
+
+{sec:"5.2",type:"single",q:"上市公司向 SEC 提交的“季度报告”使用的表格是：",
+opts:["10-K","10-Q","8-K","S-1"],ans:[1],
+exp:"<b>10-Q = 季报</b>，包含 10-K 财务部分的大部分信息项，外加一些额外项目。"},
+
+{sec:"5.2",type:"single",q:"上市公司报告“近期重大事件”使用的表格是：",
+opts:["10-K","10-Q","8-K","10-KSB"],ans:[2],
+exp:"<b>8-K = 近期重大事件报告</b>。把 K/Q/8-K 三张表的用途绑定记忆是高频考点。"},
+
+{sec:"5.2",type:"multi",q:"【多选】非上市公司的年度报告通常包含哪些内容？",
+opts:["四张基本财务报表（利润表、资产负债表、股东权益表/留存收益表、现金流量表）","相关附注（脚注）","若经审计，还含审计报告（审计意见）","董事长致辞与 5~10 年财务数据概要"],ans:[0,1,2],
+exp:"非上市公司年报=四张报表+附注（+审计报告，若审计过）。D 中的董事长致辞、5~10 年数据概要属于<b>上市公司 10-K</b>的内容。"},
+
+{sec:"5.2",type:"multi",q:"【多选】上市公司 10-K 的财务部分一般包括：",
+opts:["5 年或 10 年的财务数据概要","管理层对财务状况和经营成果的讨论与分析（MD&A）、市场风险披露","四张基本财务报表及附注、审计报告、管理层声明书","所有员工的个人薪酬明细"],ans:[0,1,2],
+exp:"10-K 财务部分含：5/10 年数据概要、MD&A 与市场风险、四张报表+附注、审计报告、管理层声明书、近期股价、未审季度数据、高管与董事名单等。D 不属于披露内容。"},
+
+{sec:"5.2",type:"judge",q:"【判断】非上市公司的季度报告通常为贷款人准备，包含信息比年报少，且未经审计。",
+opts:["正确","错误"],ans:[0],
+exp:"对。非上市公司季报<b>通常为贷款人准备</b>，信息少于年报且<b>未经审计</b>。上市公司季报则用 10-Q。"},
+
+{sec:"5.2",type:"single",q:"ESG 报告中的三个字母分别代表：",
+opts:["经济、社会、政府","环境、社会、公司治理","效率、稳定、增长","环境、安全、管理"],ans:[1],
+exp:"<b>ESG = 环境(Environmental)、社会(Social)、公司治理(Governance)</b>，是企业展示可持续发展实践的重要工具，向利益相关方定期披露。"},
+
+{sec:"5.2",type:"single",q:"向股东的正式报告中，紧随收益公报之后公布的内容通常是：",
+opts:["完整的总分类账","管理层对经营成果的讨论分析（MD&A）及简要利润表和资产负债表","下一年度预算草案","审计师的工作底稿"],ans:[1],
+exp:"顺序：新闻公报公布收益 → 紧接着是 <b>MD&A + 简要利润表和资产负债表</b>，这些都包含在发给股东的正式报告里。"},
+
+/* ===================== 5.3 报表形式与附注 ===================== */
+{sec:"5.3",type:"multi",q:"【多选】使财务报表更具实用性的三个额外特征是：",
+opts:["比较财务报表（列报本期及以前期间数据）","报表中的附加小计项与分类","补充披露（大量附注）","由 SEC 代为编制"],ans:[0,1,2],
+exp:"三特征：①<b>比较</b>报表、②附加<b>小计与分类</b>、③<b>补充披露（附注）</b>。报表始终由公司管理层负责编制，不是 SEC。"},
+
+{sec:"5.3",type:"single",q:"在比较财务报表中，资产负债表和其他报表通常各列报几年数据？",
+opts:["资产负债表 3 年，其他报表 2 年","资产负债表 2 年，其他报表 3 年","全部 2 年","全部 3 年"],ans:[1],
+exp:"<b>资产负债表列报 2 年，其他报表（利润表、现金流量表等）列报 3 年</b>。资产负债表是“时点”表，只需期初期末两个时点对比。"},
+
+{sec:"5.3",type:"single",q:"分类资产负债表中，资产的排列顺序是：",
+opts:["按到期顺序","按流动性顺序","按资金来源","按字母顺序"],ans:[1],
+exp:"<b>资产按流动性、负债按到期顺序、股东权益按资金来源</b>排列。这三组顺序常一起考。"},
+
+{sec:"5.3",type:"single",q:"关于无形资产在资产负债表上的列示，下列说法正确的是：",
+opts:["所有无形资产都不摊销","除商誉等无特定寿命的以外，大部分无形资产需摊销，按摊销后净值列示","无形资产按重置成本列示","无形资产只能费用化，不能确认为资产"],ans:[1],
+exp:"除<b>商誉及其他无特定寿命</b>的无形资产外，大部分无形资产要<b>摊销</b>（类似实物资产折旧），在表上按<b>摊销后净值</b>列示。"},
+
+{sec:"5.3",type:"single",q:"公司发行普通股，“资本公积（股票溢价）”的计算公式是：",
+opts:["面值 × 数量","（实际交易价格 − 面值）× 数量","实际交易价格 × 数量","净利润 − 分配股利"],ans:[1],
+exp:"实收资本拆两块：<b>普通股股本 = 面值 × 数量</b>；<b>资本公积 = (实际价 − 面值) × 数量</b>。留存收益则 = 净利润 − 分配股利。"},
+
+{sec:"5.3",type:"single",q:"某公司以每股 $16 发行 1,000,000 股，每股面值 $0.01。计入“资本公积”的金额为：",
+opts:["$10,000","$16,000,000","$15,990,000","$160,000"],ans:[2],
+exp:"普通股股本 = 0.01 × 1,000,000 = <b>$10,000</b>；现金共收 16 × 1,000,000 = $16,000,000；资本公积 = (16 − 0.01) × 1,000,000 = <b>$15,990,000</b>。即 16,000,000 − 10,000 = 15,990,000。"},
+
+{sec:"5.3",type:"single",q:"留存收益的计算口径是：",
+opts:["净利润 − 分配股利","收入 − 费用","面值 × 数量","总资产 − 总负债"],ans:[0],
+exp:"<b>留存收益 = 净利润 − 分配（支付）的股利</b>，是股东权益的组成部分（属于“赚来留下的”，区别于股东“投进来的”实收资本）。"},
+
+{sec:"5.3",type:"single",q:"单步式利润表的特点是：",
+opts:["逐级计算毛利、营业利润、税前利润等小计","列出收入和费用，收入直接扣除费用得净利润，不添加小计","只列示每股收益","只适用于非上市公司"],ans:[1],
+exp:"<b>单步式</b>：收入合计 − 费用合计 = 净利润，<b>不设小计</b>。<b>分步式</b>则逐级算出毛利→营业利润→税前利润→净利润。"},
+
+{sec:"5.3",type:"single",q:"毛利率的计算公式是：",
+opts:["净利润 / 净销售额","毛利润 / 净销售额","营业利润 / 总资产","毛利润 / 总资产"],ans:[1],
+exp:"<b>毛利率 = 毛利润 ÷ 净销售额</b>，反映管理层实现产品/服务<b>溢价销售</b>的成效。毛利润 = 净销售额 − 销货成本。"},
+
+{sec:"5.3",type:"single",q:"在分步式利润表中，“营业利润”是如何得到的？",
+opts:["净销售额 − 销货成本","毛利润 − 营业费用","营业利润 ± 营业外项目","税前利润 − 所得税"],ans:[1],
+exp:"逐级关系：净销售额−销货成本=<b>毛利润</b>；毛利润−营业费用=<b>营业利润</b>；营业利润±非经营(其他)项目=<b>税前利润</b>；税前利润−所得税=<b>净利润</b>。"},
+
+{sec:"5.3",type:"single",q:"下列哪项属于利润表中的“非经营性（其他）项目”？",
+opts:["主营产品的销售收入","主营产品的销货成本","利息收入、利息费用及出售固定资产的利得损失","销售人员工资"],ans:[2],
+exp:"非经营性项目=与<b>主营业务无关</b>的收入/费用/利得/损失，如利息收入、利息费用、出售固定资产和投资的利得损失。"},
+
+{sec:"5.3",type:"multi",q:"【多选】下列哪些情形会导致利润表中需要增加列报“非经常性项目”？",
+opts:["终止经营（重要业务部门被出售或废弃）","不经常发生的活动产生的利得与损失","日常的主营销售收入","每月固定的房租费用"],ans:[0,1],
+exp:"出现<b>终止经营</b>或<b>非经常项目（不常发生的活动）</b>任一项，就要增列“非经常性项目”。C、D 是经常性的日常项目。"},
+
+{sec:"5.3",type:"single",q:"每股收益（EPS）的计算公式是：",
+opts:["净利润 / 期末总股数","普通股股东可获得的净利润 / 报告期流通在外普通股的平均股数","净利润 / 总资产","毛利润 / 流通股数"],ans:[1],
+exp:"<b>EPS = 普通股股东可得净利润 ÷ 流通在外普通股平均股数</b>。若有优先股股息，要先从分子（净利润）中扣除。GAAP 要求 EPS 必须在利润表中单独列示。"},
+
+{sec:"5.3",type:"single",q:"计算 EPS 时，若公司存在优先股股息，应如何处理？",
+opts:["计入分母","从分子的净利润中扣除","忽略不计","加到净利润上"],ans:[1],
+exp:"优先股股息要<b>从分子（净利润）中扣除</b>，因为 EPS 衡量的是<b>普通股股东</b>能分到的部分。"},
+
+{sec:"5.3",type:"single",q:"某公司净利润 $20,000，优先股股息 $2,000，流通在外普通股平均 9,000 股。每股收益（EPS）约为：",
+opts:["$2.22","$2.00","$2.44","$1.80"],ans:[1],
+exp:"先从分子扣优先股股息：(20,000 − 2,000) = 18,000；EPS = 18,000 ÷ 9,000 = <b>$2.00</b>。别忘了扣优先股股息这一步。"},
+
+{sec:"5.3",type:"judge",q:"【判断】GAAP 要求每股收益（EPS）必须在利润表中单独列报。",
+opts:["正确","错误"],ans:[0],
+exp:"对。<b>EPS 是 GAAP 强制列报项</b>，通常位于利润表底部或单独作为附注部分。"},
+
+{sec:"5.3",type:"multi",q:"【多选】关于“综合收益表”，下列说法正确的有：",
+opts:["FASB 和 IASB 都要求编制","可以单独列示，也可以与利润表合并列示","包含净利润加上其他综合收益（如外币折算、衍生工具/可供出售证券的未实现利得损失）","只有非上市公司才需要编制"],ans:[0,1,2],
+exp:"综合收益表由 <b>FASB 和 IASB 共同要求</b>，可单独或与利润表合并；总综合收益 = 净利润 + 其他综合收益项目。D 错。"},
+
+{sec:"5.3",type:"multi",q:"【多选】现金流量表的三个组成部分是：",
+opts:["经营活动现金流量","投资活动现金流量","筹资活动现金流量","披露活动现金流量"],ans:[0,1,2],
+exp:"三部分：<b>经营 / 投资 / 筹资</b>。经营=与赚营业利润相关；投资=买卖生产用资产（不含存货）和对其他公司投资；筹资=发债/还债/发股/回购/分红。"},
+
+{sec:"5.3",type:"single",q:"下列哪项现金流量应归入“投资活动”？",
+opts:["支付职工工资","购买生产用固定资产、对其他公司投资","发行公司债券筹资","向股东分配股利"],ans:[1],
+exp:"<b>投资活动</b>=对生产用资产（<b>不含存货</b>）的投资、对其他公司的投资及相应处置。A 属经营，C、D 属筹资。"},
+
+{sec:"5.3",type:"multi",q:"【多选】下列哪些属于“筹资活动”产生的现金流量？",
+opts:["发行债券、偿还债务","发行股票、股票回购","支付（分配）股利","购买存货"],ans:[0,1,2],
+exp:"筹资活动=发债/还债、发股/回购、分红（股利支付）。D 购买存货属于<b>经营活动</b>。"},
+
+{sec:"5.3",type:"single",q:"采用间接法编报经营活动现金流量时，起点是：",
+opts:["现金销售收入","权责发生制下计算的净利润","营业利润","期末现金余额"],ans:[1],
+exp:"<b>间接法以净利润为起点</b>，再对非现金项目作增减调整 → 得经营活动现金流量。调整含：非现金支出项目<b>加回</b>、非经营损益项目<b>剔除</b>、营运资金变动（应收应付等）<b>调整</b>。"},
+
+{sec:"5.3",type:"single",q:"间接法下，“折旧”这类非现金支出项目在调整时应如何处理？",
+opts:["从净利润中减去","加回到净利润","不作处理","计入筹资活动"],ans:[1],
+exp:"折旧是<b>非现金支出</b>，编报时已减少了净利润但并未真正流出现金，所以间接法下要<b>加回</b>。"},
+
+{sec:"5.3",type:"multi",q:"【多选】财务报表附注通常包含哪些内容？",
+opts:["公司采用的关键会计准则/政策的说明","对所报告数字的更多细节解释","报表中未直接披露但相关的财务信息（如法律问题、协议）","公司全体员工的家庭住址"],ans:[0,1,2],
+exp:"附注三类内容：①关键会计政策概述、②数字细节的进一步解释、③表内未披露的相关财务信息（如诉讼、协议）。其中第一项一般是<b>重要会计政策概述</b>。"},
+
+/* ===================== 5.4 ROA ===================== */
+{sec:"5.4",type:"single",q:"资产回报率（ROA）的计算公式是：",
+opts:["净利润 / 平均总资产","净利润 / 净销售额","净销售额 / 平均总资产","毛利润 / 总资产"],ans:[0],
+exp:"<b>ROA = 净利润 ÷ 平均总资产</b>，衡量每 1 美元资产投资创造的收益，反映管理层运用债权人+股东共同出资资产的效率。"},
+
+{sec:"5.4",type:"single",q:"ROA 衡量的核心问题是：",
+opts:["公司每股能分多少红利","管理层如何有效运用由债权人与股东共同出资形成的资产总投入","公司的市场占有率","公司的负债比例高低"],ans:[1],
+exp:"ROA 看的是<b>资产运用效率</b>：同等条件下 ROA 越高，说明投资选择与管理越有效。注意分母是<b>全部</b>资产（债权人+股东共同出资）。"},
+
+{sec:"5.4",type:"single",q:'计算 ROA 时使用“平均总资产”，其口径是：',
+opts:["期末总资产","（期初总资产 + 期末总资产）/ 2","期初总资产","本期新增总资产"],ans:[1],
+exp:"<b>平均总资产 =（期初 + 期末）/ 2</b>。用平均值是为了与“整期”产生的净利润口径匹配（净利润是时期数，资产是时点数）。"},
+
+{sec:"5.4",type:"single",q:"在 ROA 的利润驱动（杜邦）分解中，ROA 等于：",
+opts:["净利润率 × 总资产周转率","毛利率 × 净利率","净利率 + 资产周转率","净利润 × 总资产"],ans:[0],
+exp:"<b>ROA = 净利润率 × 总资产周转率</b>，即 (净收入/净销售额) × (净销售额/平均总资产)。中间的净销售额约掉，正好还原成 净收入/平均总资产。"},
+
+{sec:"5.4",type:"single",q:"杜邦分解 ROA = (净收入/净销售额) × (净销售额/平均总资产) 中，第二项“净销售额/平均总资产”称为：",
+opts:["净利润率","总资产周转率","毛利率","权益乘数"],ans:[1],
+exp:"(净销售额 / 平均总资产) = <b>总资产周转率</b>，衡量每 1 元资产带来多少销售额（运营效率）。第一项 (净收入/净销售额) 是<b>净利润率</b>。"},
+
+{sec:"5.4",type:"single",q:"某公司净利润率 5%，总资产周转率 1.6。其 ROA 为：",
+opts:["6.6%","8%","3.2%","13%"],ans:[1],
+exp:"ROA = 净利润率 × 总资产周转率 = 5% × 1.6 = <b>8%</b>。两个驱动因子相乘即可。"},
+
+{sec:"5.4",type:"single",q:"某公司净利润 $50,000，期初总资产 $400,000，期末总资产 $600,000。其 ROA 为：",
+opts:["8.3%","10%","12.5%","6.25%"],ans:[1],
+exp:"平均总资产 = (400,000 + 600,000)/2 = 500,000；ROA = 50,000 ÷ 500,000 = <b>10%</b>。先求平均，再相除。"},
+
+{sec:"5.4",type:"multi",q:"【多选】分析某笔交易对 ROA 的影响，正确的三步是：",
+opts:["记录交易，确定其对各账户的影响","识别账户：判断受影响账户在比率的分子还是分母、影响方向是增是减","评估影响：综合各账户影响，判断对整体比率的综合作用","直接套用上期 ROA 数值"],ans:[0,1,2],
+exp:"三步法：①<b>记录交易</b>→②<b>识别账户</b>（分子/分母 + 增/减方向）→③<b>评估影响</b>（综合判断对比率的净效果）。"}
+];
+
+/* ============ 逻辑 ============ */
+const app = document.getElementById('app');
+const foot = document.getElementById('foot');
+document.getElementById('totalQ').textContent = Q.length;
+
+let pool=[], idx=0, score=0, wrong=[], picks=[];
+
+function counts(){const c={};Q.forEach(q=>c[q.sec]=(c[q.sec]||0)+1);return c;}
+
+function renderStart(){
+  foot.classList.remove('hidden');
+  const c=counts();
+  let html='<div class="card"><p class="lead">点一个章节开始刷题。每答完一题立即出对错和解析——<b>错题会单独收集</b>，刷完可以只刷错题。</p><div class="sec-list">';
+  html+=`<button class="sec-btn all-btn" data-sec="ALL"><span class="sec-no">全</span><span class="sec-meta"><span class="sec-title">全章随机刷（${Q.length}题）</span><span class="sec-desc">5.1 → 5.4 打乱顺序，模拟考试</span></span><span class="sec-count">${Q.length}</span></button>`;
+  for(const s in SECTIONS){
+    html+=`<button class="sec-btn" data-sec="${s}"><span class="sec-no">${s}</span><span class="sec-meta"><span class="sec-title">${SECTIONS[s]}</span><span class="sec-desc">${SEC_DESC[s]}</span></span><span class="sec-count">${c[s]||0}题</span></button>`;
+  }
+  html+='</div></div>';
+  app.innerHTML=html;
+  app.querySelectorAll('.sec-btn').forEach(b=>b.onclick=()=>start(b.dataset.sec));
+}
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function start(sec){
+  if(sec==='ALL') pool=shuffle(Q);
+  else if(sec==='WRONG') pool=wrong.slice();
+  else pool=shuffle(Q.filter(q=>q.sec===sec));
+  idx=0;score=0;wrong=[];
+  foot.classList.add('hidden');
+  renderQ();
+}
+
+function typeTag(t){
+  if(t==='multi')return '<span class="tag multi">多选</span>';
+  if(t==='judge')return '<span class="tag judge">判断</span>';
+  return '<span class="tag">单选</span>';
+}
+
+function renderQ(){
+  const q=pool[idx];
+  picks=[];
+  const pct=Math.round((idx)/pool.length*100);
+  const letters=['A','B','C','D','E','F'];
+  let opts='';
+  q.opts.forEach((o,i)=>{
+    opts+=`<button class="opt" data-i="${i}"><span class="mk">${letters[i]}</span><span class="otext">${o}</span></button>`;
+  });
+  app.innerHTML=`
+    <div class="topbar">
+      <span class="pill">第 <b>${idx+1}</b> / ${pool.length} 题</span>
+      <span class="pill">✓ <b>${score}</b></span>
+      <button class="quit" id="quitBtn">退出</button>
+    </div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div class="card">
+      <div class="qhead">${typeTag(q.type)}<span class="secref">§${q.sec} ${SECTIONS[q.sec]}</span></div>
+      <div class="qtext">${q.q}</div>
+      <div class="opts" id="opts">${opts}</div>
+      <div class="fb" id="fb"></div>
+      <button class="btn" id="confirm" ${q.type==='multi'?'disabled':''} style="${q.type==='multi'?'':'display:none'}">确认作答</button>
+      <button class="btn hidden" id="next">${idx+1<pool.length?'下一题 →':'查看结果'}</button>
+    </div>`;
+  document.getElementById('quitBtn').onclick=renderStart;
+  const optEls=[...app.querySelectorAll('.opt')];
+  optEls.forEach(el=>el.onclick=()=>{
+    if(el.classList.contains('locked'))return;
+    const i=+el.dataset.i;
+    if(q.type==='multi'){
+      if(picks.includes(i)){picks=picks.filter(x=>x!==i);el.classList.remove('sel');}
+      else{picks.push(i);el.classList.add('sel');}
+      document.getElementById('confirm').disabled=picks.length===0;
+    }else{
+      picks=[i];grade();
+    }
+  });
+  if(q.type==='multi') document.getElementById('confirm').onclick=grade;
+}
+
+function grade(){
+  const q=pool[idx];
+  const letters=['A','B','C','D','E','F'];
+  const correct=q.ans.slice().sort().join(',')===picks.slice().sort().join(',');
+  if(correct)score++;else wrong.push(q);
+  app.querySelectorAll('.opt').forEach(el=>{
+    const i=+el.dataset.i;
+    el.classList.add('locked');el.classList.remove('sel');
+    if(q.ans.includes(i))el.classList.add('correct');
+    else if(picks.includes(i))el.classList.add('wrong');
+  });
+  const fb=document.getElementById('fb');
+  const ansStr=q.ans.map(i=>letters[i]).join('、');
+  fb.className='fb show '+(correct?'ok':'no');
+  fb.innerHTML=`<div class="verdict">${correct?'✓ 答对了':'✗ 答错了'}<span class="ans">　正确答案：${ansStr}</span></div><div class="exp">${q.exp}</div>`;
+  const cf=document.getElementById('confirm');if(cf)cf.style.display='none';
+  const nx=document.getElementById('next');nx.classList.remove('hidden');
+  nx.onclick=()=>{idx++; idx<pool.length?renderQ():renderResult();};
+  fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function renderResult(){
+  const total=pool.length;
+  const pct=Math.round(score/total*100);
+  let verdict,vcls;
+  if(pct>=90){verdict='稳了，这章概念基本拿下 ✦';}
+  else if(pct>=75){verdict='不错，把错题再过一遍就很扎实了';}
+  else if(pct>=60){verdict='及格线上，错题别放过，重点补一补';}
+  else{verdict='概念还没串起来，建议对着错题回去翻书再刷一轮';}
+  let html=`
+    <div class="card">
+      <div class="score-num">${score}<span> / ${total}</span></div>
+      <div class="score-label">正确率 ${pct}%</div>
+      <div class="verdict-line">${verdict}</div>`;
+  if(wrong.length){
+    html+=`<button class="btn" id="redoWrong">只刷错题（${wrong.length}）</button>`;
+  }
+  html+=`<button class="btn ghost" id="backHome">返回章节选择</button>`;
+  if(wrong.length){
+    html+=`<div class="review-h">错题回顾 · ${wrong.length} 题</div>`;
+    const letters=['A','B','C','D','E','F'];
+    wrong.forEach(q=>{
+      const ans=q.ans.map(i=>letters[i]+'. '+q.opts[i]).join('；');
+      html+=`<div class="rev-item"><div class="rev-q">${typeTag(q.type)} ${q.q}</div><div class="rev-line"><span class="c">正确：${ans}</span></div><div class="rev-exp">${q.exp}</div></div>`;
+    });
+  }
+  html+=`</div>`;
+  app.innerHTML=html;
+  const rw=document.getElementById('redoWrong');if(rw)rw.onclick=()=>start('WRONG');
+  document.getElementById('backHome').onclick=renderStart;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+renderStart();
+</script>
+</body>
+</html>
