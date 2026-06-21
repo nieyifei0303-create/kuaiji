@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>财务会计 · 第5–8章 做题册</title>
+<style>
+  :root{
+    --paper:#f3f1e9;        /* 账簿纸 */
+    --paper-rule:#d9e0db;   /* 横纹 */
+    --ink:#1c2a26;          /* 墨色 */
+    --ink-soft:#5b6b64;
+    --line:#c8cdc6;
+    --green:#1f6f53;        /* 入账绿 (借/正确) */
+    --green-bg:#e7f1eb;
+    --red:#9e3631;          /* 账簿红 (错误) */
+    --red-bg:#f6e7e5;
+    --gold:#b07d2b;         /* 强调金 */
+    --card:#fbfaf5;
+    --shadow:0 1px 0 rgba(28,42,38,.05),0 6px 22px -16px rgba(28,42,38,.45);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,sans-serif;
+    line-height:1.6;font-size:16px;
+  }
+  .num{font-family:"SFMono-Regular",ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;}
+
+  /* ---- 顶部 ---- */
+  header{
+    background:var(--ink);color:#f3f1e9;padding:22px 18px 16px;
+    background-image:linear-gradient(var(--ink),var(--ink));
+    border-bottom:3px double #4a5a53;
+  }
+  .wrap{max-width:820px;margin:0 auto}
+  .eyebrow{font-size:12px;letter-spacing:.32em;color:#9fb3aa;text-transform:uppercase;margin:0 0 6px}
+  header h1{margin:0;font-size:26px;font-weight:800;letter-spacing:.02em}
+  header h1 small{display:block;font-size:13px;font-weight:500;color:#b9c8c1;letter-spacing:.04em;margin-top:6px}
+
+  /* ---- 章节标签 ---- */
+  nav.chapters{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);}
+  .chapters .wrap{display:flex;gap:6px;overflow-x:auto;padding:10px 14px;scrollbar-width:none}
+  .chapters .wrap::-webkit-scrollbar{display:none}
+  .chip{
+    flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink-soft);
+    border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;
+    transition:.15s;
+  }
+  .chip:hover{border-color:var(--green)}
+  .chip.active{background:var(--ink);color:#f3f1e9;border-color:var(--ink)}
+
+  main{max-width:820px;margin:0 auto;padding:18px 14px 90px}
+
+  /* ---- 计分条 ---- */
+  .scorebar{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);
+    border-radius:10px;padding:12px 16px;margin:6px 0 20px;box-shadow:var(--shadow);
+  }
+  .scorebar .ttl{font-weight:800;font-size:17px;margin-right:auto}
+  .stat{font-size:13px;color:var(--ink-soft)}
+  .stat b{font-size:18px;color:var(--ink);margin-right:2px}
+  .stat .ok{color:var(--green)} .stat .no{color:var(--red)}
+  .reset{border:1px solid var(--line);background:transparent;color:var(--ink-soft);
+    border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer}
+  .reset:hover{border-color:var(--red);color:var(--red)}
+
+  /* ---- 板块标题 ---- */
+  .section-head{display:flex;align-items:baseline;gap:10px;margin:30px 0 14px;padding-bottom:8px;
+    border-bottom:2px solid var(--ink)}
+  .section-head .tag{font-family:"SFMono-Regular",ui-monospace,monospace;font-size:11px;letter-spacing:.2em;
+    color:#fff;background:var(--green);padding:3px 9px;border-radius:4px;text-transform:uppercase}
+  .section-head .tag.ex{background:var(--gold)}
+  .section-head h2{margin:0;font-size:19px;font-weight:800}
+  .section-head .cnt{margin-left:auto;font-size:13px;color:var(--ink-soft)}
+
+  /* ---- 选择题卡片 ---- */
+  .q{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 18px 6px;
+    margin-bottom:16px;box-shadow:var(--shadow)}
+  .q .stem{display:flex;gap:12px;margin-bottom:14px}
+  .q .qno{flex:0 0 auto;font-family:"SFMono-Regular",ui-monospace,monospace;font-weight:700;color:var(--green);
+    background:var(--green-bg);border-radius:7px;min-width:34px;height:30px;display:flex;align-items:center;
+    justify-content:center;font-size:14px}
+  .q .qtext{font-weight:600;font-size:16px;padding-top:3px}
+  .q .qtext .en{display:block;font-weight:400;font-size:12.5px;color:var(--ink-soft);margin-top:5px;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);background:#fff;
+    border-radius:9px;padding:11px 13px;cursor:pointer;transition:.12s;font-size:15px}
+  .opt:hover{border-color:var(--green);background:var(--green-bg)}
+  .opt .key{flex:0 0 auto;font-family:"SFMono-Regular",ui-monospace,monospace;font-weight:700;color:var(--ink-soft);
+    width:20px}
+  .opt.correct{background:var(--green-bg);border-color:var(--green)}
+  .opt.correct .key{color:var(--green)}
+  .opt.wrong{background:var(--red-bg);border-color:var(--red)}
+  .opt.wrong .key{color:var(--red)}
+  .opt.disabled{cursor:default;opacity:.92}
+  .opt.disabled:hover{background:#fff;border-color:var(--line)}
+  .opt.correct.disabled:hover{background:var(--green-bg);border-color:var(--green)}
+  .opt.wrong.disabled:hover{background:var(--red-bg);border-color:var(--red)}
+  .mark{margin-left:auto;font-weight:800;font-size:15px}
+  .mark.ok{color:var(--green)} .mark.no{color:var(--red)}
+
+  .explain{margin:13px 0 12px;border-top:1px dashed var(--line);padding-top:12px;
+    font-size:14.5px;color:var(--ink);display:none}
+  .explain.show{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(-3px)}to{opacity:1}}
+  .explain .lbl{display:inline-block;font-size:11px;letter-spacing:.15em;color:var(--gold);font-weight:800;
+    margin-bottom:5px}
+  .explain b{color:var(--green)}
+  .explain .calc{font-family:"SFMono-Regular",ui-monospace,monospace;background:#f0efe7;border-radius:6px;
+    padding:2px 6px;font-size:13.5px;font-variant-numeric:tabular-nums}
+
+  /* ---- 计算题 ---- */
+  .ex{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:18px;
+    box-shadow:var(--shadow);overflow:hidden}
+  .ex .exhead{padding:16px 18px;border-left:4px solid var(--gold)}
+  .ex .extitle{font-weight:800;font-size:16px;margin:0 0 10px}
+  .ex .prob{font-size:15px}
+  .ex table.data{border-collapse:collapse;margin:12px 0;font-size:14px;width:100%;max-width:480px}
+  .ex table.data td,.ex table.data th{border:1px solid var(--line);padding:6px 10px;text-align:left}
+  .ex table.data th{background:#eef0e9;font-weight:700}
+  .ex table.data td.r{text-align:right;font-family:"SFMono-Regular",ui-monospace,monospace;
+    font-variant-numeric:tabular-nums}
+  .ex .reveal{width:100%;border:none;border-top:1px solid var(--line);background:var(--ink);color:#f3f1e9;
+    padding:13px;font-size:14.5px;font-weight:700;cursor:pointer;letter-spacing:.04em}
+  .ex .reveal:hover{background:#26352f}
+  .sol{display:none;padding:16px 18px;background:#f7f6ef;border-top:1px solid var(--line);font-size:14.5px}
+  .sol.show{display:block}
+  .sol h4{margin:14px 0 7px;font-size:14px;color:var(--green);letter-spacing:.02em}
+  .sol h4:first-child{margin-top:0}
+  .sol .step{margin:5px 0}
+  .sol .calc{font-family:"SFMono-Regular",ui-monospace,monospace;background:#ecebe2;border-radius:6px;
+    padding:8px 11px;margin:7px 0;font-size:13.5px;font-variant-numeric:tabular-nums;white-space:pre-wrap;
+    line-height:1.7;overflow-x:auto}
+  .sol .ans{background:var(--green-bg);border:1px solid var(--green);border-radius:8px;padding:10px 13px;
+    margin-top:12px;font-weight:700;color:var(--green)}
+  .je{font-family:"SFMono-Regular",ui-monospace,monospace;font-size:13px;background:#ecebe2;border-radius:6px;
+    padding:9px 11px;margin:7px 0;white-space:pre;overflow-x:auto;line-height:1.8}
+
+  footer{text-align:center;color:var(--ink-soft);font-size:12.5px;padding:0 14px 36px}
+  @media(max-width:520px){
+    header h1{font-size:22px}
+    .opt{font-size:14.5px}
+    main{padding:14px 11px 80px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <p class="eyebrow">Financial Accounting · Final Review</p>
+    <h1>财务会计 做题册
+      <small>第 5–8 章 · 选择题 + 计算题 · 中文题干 + 逐题解析</small>
+    </h1>
+  </div>
+</header>
+
+<nav class="chapters">
+  <div class="wrap" id="chapTabs"></div>
+</nav>
+
+<main>
+  <div class="scorebar">
+    <span class="ttl" id="chapTitle"></span>
+    <span class="stat">已答 <b id="sAns">0</b>/<span id="sTot">0</span></span>
+    <span class="stat ok">对 <b class="ok" id="sOk">0</b></span>
+    <span class="stat no">错 <b class="no" id="sNo">0</b></span>
+    <button class="reset" id="resetBtn">重做本章</button>
+  </div>
+  <div id="content"></div>
+</main>
+
+<footer>共 56 道选择题 + 4 道计算/练习题 · 点击选项即时判分 · 计算题点「查看完整解答」展开<br>
+祝考试顺利 · 6/22</footer>
+
+<script>
+/* =========================================================
+   题库数据：题干已译为中文，关键英文术语保留括注
+   answer 为正确选项下标(0=a,1=b,...)
+========================================================= */
+const DATA = {
+ 5:{title:"第5章 现金流量表",
+  mc:[
+   {q:"现金流量表的首要目的是提供以下哪类信息？",
+    options:["关于企业在某一会计期间内的现金收入与现金支出","关于企业在某一会计期间内的投资与筹资活动","关于企业在会计期末的财务状况","关于某一时期的经营活动"],
+    answer:0,
+    ex:"现金流量表的核心是反映<b>一个期间内现金的流入与流出</b>。B、D 只是其中的部分内容（投资/筹资、经营只是三大板块之一），C 是资产负债表的职能。"},
+   {q:"20X2年度：向客户收款 $50,000；支付职工薪酬 $8,000；偿还长期债券 $7,000；支付股利 $1,000。20X2年经营活动产生的现金为？",
+    options:["$34,000","$35,000","$42,000","$43,000"],
+    answer:2,
+    ex:"只看<b>经营活动</b>：收款 50,000 − 付薪 8,000 = <span class='calc'>$42,000</span>。偿还债券属<b>筹资</b>、支付股利属<b>筹资</b>，都不计入经营。"},
+   {q:"20X2年度：支付股票股利 $40,000；支付利息 $7,000；支付供应商 $8,000；购买设备 $9,000。20X2年投资活动使用的现金为？",
+    options:["$9,000","$17,000","$24,000","$49,000"],
+    answer:0,
+    ex:"<b>投资活动</b>只含购买设备 <span class='calc'>$9,000</span>。支付股利=筹资；付利息、付供应商=经营（美国 GAAP 下利息列经营）。"},
+   {q:"Wilguess 公司期初应收账款 $15,000，本年赊销 $110,000，期末应收账款 $5,000。本年向客户收到的现金为？",
+    options:["$120,000","$115,000","$110,000","$100,000"],
+    answer:0,
+    ex:"收现 = 期初应收 + 赊销 − 期末应收 = <span class='calc'>15,000 + 110,000 − 5,000 = 120,000</span>。应收下降说明多收回了现金。"},
+   {q:"Williams 公司：净亏损 $10,000；折旧 $15,000；应收账款增加 $6,000。在无其他变动下，经营活动产生(使用)的现金为？",
+    options:["$(4,000)","$(1,000)","$5,000","$11,000"],
+    answer:1,
+    ex:"间接法：−10,000(净亏损) + 15,000(折旧加回) − 6,000(应收增加，占用现金) = <span class='calc'>$(1,000)</span>。"},
+   {q:"间接法下，下列哪项应在净利润上<b>加回</b>以计算经营活动现金？",
+    options:["存货增加","应计费用(应付费用)增加","应付账款减少","应付债券增加"],
+    answer:1,
+    ex:"经营性流动负债<b>增加</b>=占用现金少→加回。应计/应付费用增加 → 加回。存货增加、应付账款减少都要<b>减</b>；应付债券属筹资，不进经营。"},
+   {q:"间接法下，下列各项中<b>除哪一项外</b>都应在净利润上加回以得出经营活动现金流？",
+    options:["折旧费用","应付账款增加","处置设备的损失","应收账款增加"],
+    answer:3,
+    ex:"折旧加回、应付账款增加加回、处置损失加回。唯有<b>应收账款增加</b>占用现金，应<b>减</b>，不是加。"},
+   {q:"编制现金流量表时，直接法与间接法的差异出现在哪个(些)部分？",
+    options:["筹资活动","经营活动","投资活动","以上全部"],
+    answer:1,
+    ex:"两种方法只在<b>经营活动</b>部分的列报方式不同；投资、筹资部分完全相同。"},
+   {q:"分析一项经营性资产出售产生的现金流时，需要用到哪些报表？",
+    options:["利润表和资产负债表","仅利润表","仅资产负债表","留存收益表"],
+    answer:0,
+    ex:"判断出售收到的现金需要：<b>资产负债表</b>(资产账面原值、累计折旧)＋<b>利润表</b>(处置损益)，二者结合才能还原出售价款。"},
+   {q:"期初应收账款 $15,000，本期现金收款 $200,000，期末应收账款 $7,500。本期销售收入为？",
+    options:["$192,500","$200,000","$207,500","$215,000"],
+    answer:0,
+    ex:"销售收入 = 收款 + 期末应收 − 期初应收 = <span class='calc'>200,000 + 7,500 − 15,000 = 192,500</span>。（应收下降说明收入小于收款）"},
+   {q:"应付工资期初 $5,000，期末 $7,000，本期工资费用 $79,000。本期实际支付的工资现金为？",
+    options:["$77,000","$79,000","$81,000","$86,000"],
+    answer:0,
+    ex:"付现 = 工资费用 + 期初应付 − 期末应付 = <span class='calc'>79,000 + 5,000 − 7,000 = 77,000</span>。应付工资增加，说明有 2,000 尚未支付。"}
+  ],
+  ex:[
+   {title:"练习：Murphy 公司 — 间接法求经营活动现金净额",
+    prob:`期末各项余额如下（单位：$）：<table class="data"><tr><th>项目</th><th>20X2</th><th>20X1</th></tr>
+      <tr><td>应收账款</td><td class="r">300</td><td class="r">445</td></tr>
+      <tr><td>预付保险费</td><td class="r">125</td><td class="r">100</td></tr>
+      <tr><td>预收收入</td><td class="r">50</td><td class="r">60</td></tr>
+      <tr><td>应付薪酬</td><td class="r">515</td><td class="r">475</td></tr></table>
+      本年净利润 $18,515，折旧费用 $3,420。求经营活动现金净额。`,
+    sol:`<h4>思路：间接法 = 净利润 + 非付现费用 ± 营运资本变动</h4>
+      <div class="step">先判断每个项目的方向（"资产增加→减现金；负债增加→加现金"）：</div>
+      <div class="calc">应收账款  445→300  下降145   资产↓ → +145
+预付保险费 100→125  上升 25   资产↑ → −25
+预收收入   60→ 50  下降 10   负债↓ → −10
+应付薪酬  475→515  上升 40   负债↑ → +40</div>
+      <h4>汇总</h4>
+      <div class="calc">  净利润              18,515
++ 折旧               3,420
++ 应收账款减少         145
+− 预付保险费增加       (25)
+− 预收收入减少         (10)
++ 应付薪酬增加          40
+─────────────────────────
+  经营活动现金净额   22,085</div>
+      <div class="ans">经营活动现金净额 = $22,085</div>`}
+  ]
+ },
+
+ 6:{title:"第6章 销售的会计处理",
+  mc:[
+   {q:"Cedarwood 公寓于 20X2年12月1日预收了 6 个月房租。按<b>权责发生制</b>，该收入应如何确认？",
+    options:["在 20X2年12月31日全部确认","按月平均(按比例)确认","在 6 个月期满时确认","收到时确认","租客入住时确认"],
+    answer:1,
+    ex:"权责发生制下，收入随服务的提供逐期确认，因此 6 个月房租应<b>按月平均</b>分摊确认。"},
+   {q:"记录客户<b>退货</b>的分录应包含？",
+    options:["借：销售收入","贷：销售收入","借：销售退回与折让","贷：销售退回与折让","借：购货退回与折让","贷：购货退回与折让"],
+    answer:2,
+    ex:"退货用备抵账户“销售退回与折让”(Sales Returns & Allowances)，它是收入的备抵项，做<b>借方</b>，而不是直接冲减销售收入。"},
+   {q:"Joshua 公司有两档商业折扣：批发商 10%，零售商再加 5%。若按标价 $45,000 卖给<b>批发商</b>，应按多少入账？",
+    options:["$49,500","$40,500","$47,250","$42,750"],
+    answer:1,
+    ex:"批发商只享 10%：<span class='calc'>45,000 × (1 − 10%) = 40,500</span>。额外 5% 是给零售商的，不适用。商业折扣直接按净额入账。"},
+   {q:"10月1日的销售，付款条件为 n/20 EOM，应在何时收回款项？",
+    options:["10月21日","10月31日","11月1日","11月20日"],
+    answer:3,
+    ex:"EOM = 月末(End Of Month)。n/20 EOM 指自<b>销售当月月末</b>起 20 天内付清：10月末(10/31) + 20 天 = <b>11月20日</b>。"},
+   {q:"Buffy 于 20X2年12月1日按 $20,000 售货，条件 2/10/net60。若 Biff 在 12月10日付款，Buffy 实收多少？",
+    options:["$14,000","$19,600","$20,000","$20,600"],
+    answer:1,
+    ex:"12/10 在 10 天折扣期内，享 2% 现金折扣：<span class='calc'>20,000 × (1 − 2%) = 19,600</span>。"},
+   {q:"Brady 公司 7月信用卡销售 $50,000，信用卡公司收取 3% 手续费。Brady 实际收到多少？",
+    options:["$48,500","$50,000","$51,500","信息不足无法计算"],
+    answer:0,
+    ex:"扣除 3% 手续费：<span class='calc'>50,000 × (1 − 3%) = 48,500</span>。手续费 1,500 计入费用。"},
+   {q:"下列哪一项<b>不</b>属于现金(Cash)？",
+    options:["纸币和硬币","汇票(money order)","支票","60天期应收票据"],
+    answer:3,
+    ex:"现金须能即时支付。<b>60天期应收票据</b>有到期日、含利息，属应收票据而非现金。汇票、支票均视同现金。"},
+   {q:"关于企业的现金控制，下列说法正确的是？",
+    options:["授权开支票的员工不应同时签发该支票","若金额低于 $100，授权人可同时签发支票","经手现金的员工应同时负责银行对账","预先编号的支票不应被使用"],
+    answer:0,
+    ex:"内部控制的核心是<b>职责分离</b>：授权与签发、经手与记录、保管与对账应相互独立。预编号支票恰恰<b>应当</b>使用以防遗漏。"},
+   {q:"Melissa 公司采用<b>直接核销法</b>确认坏账，核销一笔无法收回账款的分录是？",
+    options:["借：坏账准备 贷：应收账款","借：坏账费用 贷：应收账款","借：坏账费用 贷：坏账准备","借：坏账准备 贷：坏账费用"],
+    answer:1,
+    ex:"直接核销法不设备抵账户，实际发生坏账时直接：<b>借 坏账费用，贷 应收账款</b>。（含“坏账准备”的分录属备抵法）"},
+   {q:"在<b>备抵法</b>下，核销一笔无法收回账款的分录应？",
+    options:["借记 坏账准备","借记 坏账费用","贷记 坏账准备","借记 应收账款"],
+    answer:0,
+    ex:"备抵法的费用已在估计时计提。实际核销时只是冲销：<b>借 坏账准备，贷 应收账款</b>，不再影响损益。"},
+   {q:"SAY 公司 20X2年销售 $900,000，其中赊销 $400,000。12月31日应收账款 $80,000、坏账准备 $20,000。经验表明赊销的 5% 无法收回。本期应计提的坏账费用为？",
+    options:["$35,000","$25,000","$15,000","$20,000"],
+    answer:3,
+    ex:"题目按<b>赊销百分比法</b>：坏账费用 = 赊销 × 5% = <span class='calc'>400,000 × 5% = 20,000</span>。此法<b>直接确定费用</b>，与现有准备余额无关。"},
+   {q:"Yetmar 公司调整前“坏账准备”为<b>借方</b>余额 $2,000。期末账龄分析估计 $40,000 应收无法收回。应确认的坏账费用为？",
+    options:["$42,000","$40,000","$38,000","$2,000"],
+    answer:0,
+    ex:"账龄分析法目标是把准备调到<b>贷方 40,000</b>。现为借方 2,000，需补提 <span class='calc'>40,000 + 2,000 = 42,000</span>。（借方余额要先补回再加到目标）"},
+   {q:"JKY 公司本年赊销 $5,000,000，期初、期末应收账款分别为 $800,000 和 $1,200,000。本年应收账款周转率为？",
+    options:["2.50","4.17","5.00","6.25"],
+    answer:2,
+    ex:"平均应收 = (800,000 + 1,200,000)/2 = 1,000,000。周转率 = 赊销 / 平均应收 = <span class='calc'>5,000,000 / 1,000,000 = 5.0</span>。"},
+   {q:"若 JKY 本年应收账款周转率为 10.0，其平均收账期约为？",
+    options:["52天","50天","45天","37天"],
+    answer:3,
+    ex:"平均收账期 = 365 / 周转率 = <span class='calc'>365 / 10 ≈ 36.5 ≈ 37 天</span>。"},
+   {q:"用于授权交易、保护资产、确保财务记录准确性的各种方法和程序，称为______控制。",
+    options:["财务","内部","管理","行政","会计","d 与 e","b 与 e","以上都不是"],
+    answer:6,
+    ex:"这是<b>内部会计控制(internal accounting controls)</b>的经典定义——既属“内部”也属“会计”，故选 <b>b 与 e</b>。"},
+   {q:"内部会计控制有诸多总体目标。哪些目标用于<b>建立责任(问责)体系、旨在预防错误与舞弊</b>？",
+    options:["计价、授权、记录","调节、计价、记录","保护(保管)、授权、记录","保护、计价、记录","以上都不是"],
+    answer:2,
+    ex:"五大目标中，<b>授权、记录、保护(保管)</b>属<b>预防性</b>控制(建立问责、防患于未然)；而<b>调节(对账)与计价</b>属<b>侦查性</b>控制(发现已发生的错误)。"},
+   {q:"成功内部控制中最重要的要素是？",
+    options:["公布内部控制制度","每项控制实施前先做成本效益分析","人员(personnel)","购买足额保险"],
+    answer:2,
+    ex:"再完善的制度也要靠<b>人</b>去执行。胜任且诚信的<b>人员</b>是内部控制最关键的要素。"}
+  ],
+  ex:[
+   {title:"练习：JAC 公司 — 备抵法(应收余额百分比) 核销与计提",
+    prob:`JAC 公司赊销体育用品，按 12月31日应收账款余额的 <b>6%</b> 确定期望的备抵余额。
+      20X2年1月1日：应收账款 $40,000(借)、坏账准备 $2,400(贷)。本年汇总业务：<br>
+      a. 赊销 $450,000；&nbsp; b. 9月1日核销 Wingert 公司账款 $6,000；&nbsp; c. 收回客户款项 $350,000。<br>
+      要求：编制核销分录及 12月31日坏账调整分录。`,
+    sol:`<h4>① 核销分录（9月1日）</h4>
+      <div class="je">借：坏账准备(Allowance)      6,000
+    贷：应收账款(A/R)              6,000</div>
+      <h4>② 求 12月31日应收账款余额</h4>
+      <div class="calc">期初 40,000 + 赊销 450,000 − 收款 350,000 − 核销 6,000 = 134,000</div>
+      <h4>③ 期望备抵余额 = 6% × 应收</h4>
+      <div class="calc">134,000 × 6% = 8,040  （目标：坏账准备贷方 8,040）</div>
+      <h4>④ 求调整前准备余额，再倒挤本期计提</h4>
+      <div class="calc">坏账准备 T 形账：
+  期初贷方           2,400
+  核销借方         (6,000)  → 调整前为借方 3,600
+  需达到贷方         8,040
+  本期应计提 = 8,040 + 3,600 = 11,640</div>
+      <h4>⑤ 调整分录（12月31日）</h4>
+      <div class="je">借：坏账费用(Bad Debt Exp)  11,640
+    贷：坏账准备(Allowance)       11,640</div>
+      <div class="ans">本期坏账费用 = $11,640；调整后坏账准备贷方余额 = $8,040</div>`}
+  ]
+ },
+
+ 7:{title:"第7章 存货与销售成本",
+  mc:[
+   {q:"存货在何时转为销售成本(COGS)？",
+    options:["企业售出存货时","企业购入存货时","企业支付存货款时","企业收到客户付款时"],
+    answer:0,
+    ex:"配比原则：存货<b>售出</b>当期才结转为销售成本，与销售收入相配比。购入只是入存货资产。"},
+   {q:"会计上把销售收入与销售成本之间的差额称为？",
+    options:["销售净额","持有利得","可供销售商品","毛利(gross profit)"],
+    answer:3,
+    ex:"销售收入 − 销售成本 = <b>毛利</b>(Gross Profit)。"},
+   {q:"计算销售成本的正确公式是？",
+    options:["期初存货 − 购货 + 期末存货 = 销售成本","期初存货 + 购货 − 期末存货 = 销售成本","期初存货 + 购货 + 期末存货 = 销售成本","以上都不对"],
+    answer:1,
+    ex:"<b>期初存货 + 本期购货 − 期末存货 = 销售成本</b>。即可供销售商品减去期末未售部分。"},
+   {q:"在<b>定期盘存制</b>下，销售成本的求法是？",
+    options:["从净购货成本中减去期末存货成本","从可供销售商品成本中减去期末存货成本","从可供销售商品成本中减去期初存货成本","用净购货成本加上期末存货"],
+    answer:1,
+    ex:"定期盘存制：销售成本 = <b>可供销售商品成本 − 期末存货成本</b>。(可供销售商品 = 期初存货 + 净购货)"},
+   {q:"在<b>永续盘存制</b>下，购入用于转售的商品会导致？",
+    options:["借记 应收账款","借记 购货账户","借记 销售成本账户","借记 存货账户"],
+    answer:3,
+    ex:"永续制实时记存货，购货时<b>借记“存货”</b>账户(而非定期制的“购货”账户)。"},
+   {q:"下列哪种方法<b>不被</b>接受用于确定存货成本？",
+    options:["先进先出(FIFO)","后进先出(LIFO)","个别认定法","以上各项均可接受"],
+    answer:3,
+    ex:"在美国 GAAP 下，FIFO、LIFO、个别认定法<b>均可接受</b>，故选“以上均可”。(注：IFRS 禁用 LIFO)"},
+   {q:"在<b>价格下跌</b>期间，下列哪种存货计价方法产生的<b>净利润最低</b>？",
+    options:["FIFO","LIFO","加权平均","三者净利润相同"],
+    answer:0,
+    ex:"价格下跌时，早期成本较高。FIFO 先结转<b>较早(较高)</b>的成本→销售成本最高→<b>净利润最低</b>。"},
+   {q:"LIFO 的特征包括下列哪项？",
+    options:["允许管理层操纵净利润","上涨期产生比 FIFO 更高的净利润","下跌期产生比 FIFO 更低的存货账面价值","a、b、c 全部","b 和 c"],
+    answer:0,
+    ex:"只有<b>a 正确</b>：LIFO 可通过年末购货时点操纵利润。b 错(上涨期 LIFO 利润<b>更低</b>)；c 错(下跌期 LIFO 期末存货是较早较高成本，账面价值<b>更高</b>)。"},
+   {q:"成本与市价孰低法(LCM)可在使用下列哪种方法时应用？",
+    options:["LIFO","FIFO","加权平均","以上全部"],
+    answer:3,
+    ex:"LCM 是期末计价的<b>独立步骤</b>，与所用成本流转假设无关，FIFO/LIFO/加权平均都可叠加使用。"},
+   {q:"Miller Builders 期末有三项存货，成本与市价如下：A 成本$10/市价$8；B 成本$12/市价$14；C 成本$15/市价$16。按<b>单项</b>成本与市价孰低法，存货价值为？",
+    options:["$34","$35","$37","$38"],
+    answer:1,
+    ex:"逐项取较低者：A 取 8、B 取 12、C 取 15 → <span class='calc'>8 + 12 + 15 = 35</span>。"},
+   {q:"若 20X2年12月31日期末存货被<b>高估</b> $7,000，则？",
+    options:["销售成本将被高估","销售成本将被低估","留存收益将被低估","a 和 c","以上都不是"],
+    answer:1,
+    ex:"COGS = 期初 + 购货 − 期末。期末存货高估 → 销售成本<b>低估</b> → 净利润高估 → 留存收益<b>高估</b>(非低估)。故仅 b 对。"},
+   {q:"Merkey 公司 20X2年销售成本 $65,000，期初、期末存货分别为 $12,000 和 $14,000。20X2年存货周转率为？",
+    options:["5.6","5.4","5.0","4.6"],
+    answer:2,
+    ex:"平均存货 = (12,000 + 14,000)/2 = 13,000。周转率 = 销售成本 / 平均存货 = <span class='calc'>65,000 / 13,000 = 5.0</span>。"},
+   {q:"人工成本可以包含在哪类存货中？",
+    options:["产成品存货","原材料存货","在产品存货","b 和 c","a 和 c"],
+    answer:4,
+    ex:"人工成本在投产后才发生，存在于<b>在产品</b>与<b>产成品</b>中；原材料尚未投产，不含人工。故选 a 和 c。"},
+   {q:"下列哪项是正确的存货成本流转顺序？",
+    options:["产成品 → 原材料 → 在产品","在产品 → 产成品 → 原材料","原材料 → 在产品 → 产成品","以上都不对"],
+    answer:2,
+    ex:"制造流程：<b>原材料 → 在产品 → 产成品</b>，最后售出转为销售成本。"}
+  ],
+  ex:[
+   {title:"练习：Zachary 公司 — LIFO / FIFO / 加权平均 求销售成本",
+    prob:`4月存货记录：<table class="data"><tr><th>日期</th><th>摘要</th><th>数量·单价</th></tr>
+      <tr><td>4/1</td><td>期初存货</td><td class="r">2,000 件 @ $2</td></tr>
+      <tr><td>4/8</td><td>购入</td><td class="r">1,000 件 @ $3</td></tr>
+      <tr><td>4/12</td><td>购入</td><td class="r">300 件 @ $4</td></tr>
+      <tr><td>4/22</td><td>购入</td><td class="r">500 件 @ $5</td></tr>
+      <tr><td>4/30</td><td>售出</td><td class="r">1,600 件</td></tr></table>
+      分别用 a.LIFO &nbsp;b.FIFO &nbsp;c.加权平均 计算 4月30日的销售成本(定期盘存制)。`,
+    sol:`<h4>基础数据</h4>
+      <div class="calc">可供销售：2,000+1,000+300+500 = 3,800 件
+总成本：4,000+3,000+1,200+2,500 = $10,700
+售出 1,600 件，期末 2,200 件</div>
+      <h4>a. LIFO（后进先出，先结转最近购入）</h4>
+      <div class="calc">500@$5 = 2,500
+300@$4 = 1,200
+800@$3 = 2,400   ← (1,600−500−300=800，取4/8批次)
+COGS = 2,500+1,200+2,400 = 6,100</div>
+      <h4>b. FIFO（先进先出，先结转最早存货）</h4>
+      <div class="calc">1,600 件全部来自期初 2,000@$2
+COGS = 1,600 × 2 = 3,200</div>
+      <h4>c. 加权平均</h4>
+      <div class="calc">平均单价 = 10,700 / 3,800 ≈ $2.8158
+COGS = 1,600 × 2.8158 ≈ 4,505</div>
+      <div class="ans">LIFO 销售成本 $6,100 ｜ FIFO 销售成本 $3,200 ｜ 加权平均销售成本 ≈ $4,505</div>`}
+  ]
+ },
+
+ 8:{title:"第8章 长期资产",
+  mc:[
+   {q:"下列哪项资产<b>永远</b>按原始成本列示(不计提折旧)？",
+    options:["房屋建筑","设备","版权","土地"],
+    answer:3,
+    ex:"<b>土地</b>使用寿命无限，不折旧，始终按原始成本列示。房屋、设备折旧；版权摊销。"},
+   {q:"下列哪些成本应计入机器设备的成本？",
+    options:["发票价格","安装费用","投入使用前的试运行费","b 和 c","a、b、c 全部"],
+    answer:4,
+    ex:"使资产<b>达到可使用状态</b>前的一切必要支出都资本化：发票价 + 安装 + 试运行，<b>a、b、c 全部</b>。"},
+   {q:"计提折旧的首要目的是？",
+    options:["在资产负债表上反映资产公允价值","为资产更新提供资金","将资产成本分摊到其受益期间","按现行重置成本记录资产价值下降"],
+    answer:2,
+    ex:"折旧是<b>成本分摊</b>过程，不是计价、不是攒钱换新、也不反映市价。"},
+   {q:"出于财务报告目的，最常用的折旧方法是？",
+    options:["双倍余额递减法","直线法","修正加速成本回收制(MACRS)","工作量法"],
+    answer:1,
+    ex:"财务报告最常用<b>直线法</b>；MACRS 用于<b>所得税</b>。"},
+   {q:"Cross 公司年初购入机器，成本 $30,000，残值 $3,000，使用 6 年。第一年直线法折旧为？",
+    options:["$4,000","$4,500","$5,000","$5,500"],
+    answer:1,
+    ex:"直线折旧 = (成本 − 残值)/年限 = <span class='calc'>(30,000 − 3,000)/6 = 4,500</span>。"},
+   {q:"Wingert 公司购入新卡车 $62,000，预计残值 $12,000，可行驶 100,000 英里。第1、2年分别行驶 25,000 和 10,000 英里。第二年折旧为？",
+    options:["$5,000","$7,400","$12,500","$18,500"],
+    answer:0,
+    ex:"工作量法：每英里 = (62,000 − 12,000)/100,000 = $0.50。第二年 = <span class='calc'>10,000 × 0.50 = 5,000</span>。"},
+   {q:"Nicoll 公司购入机器，成本 $40,000，残值 $4,000，使用 4 年。<b>双倍余额递减法</b>下第二年折旧为？",
+    options:["$9,000","$10,000","$11,000","$20,000"],
+    answer:1,
+    ex:"DDB 率 = 2/4 = 50%。第1年 40,000×50%=20,000，账面余 20,000；第2年 <span class='calc'>20,000×50% = 10,000</span>。(DDB 计算时不减残值)"},
+   {q:"在折旧<b>过程末尾</b>才用到残值的折旧方法是？",
+    options:["双倍余额递减法","工作量法","直线法","a 和 b"],
+    answer:0,
+    ex:"<b>双倍余额递减法</b>每期计算时<b>不</b>扣残值，只在末期作为账面价值不得低于残值的<b>下限</b>使用；直线法和工作量法从一开始就扣减残值。"},
+   {q:"所得税用途的折旧费用，按哪种方法计算？",
+    options:["仅直线法","MACRS 法","GAAP 法","直线法与余额递减法"],
+    answer:1,
+    ex:"美国所得税折旧采用<b>MACRS</b>(修正加速成本回收制)。"},
+   {q:"折旧费用是指？",
+    options:["为购置新资产而预留的现金总额","将资产原始成本分摊到其使用期间","自资产投用以来累计的全部折旧","原始计税基础与累计折旧之差"],
+    answer:1,
+    ex:"折旧费用 = 把<b>原始成本分摊</b>到使用各期。C 是“累计折旧”，D 是“账面价值”。"},
+   {q:"20X2年1月1日 MaLady 公司账上机器原值 $100,000。本年支出：小修 $5,000、改良 $20,000、添置 $9,000。12月31日机器账户金额为？",
+    options:["$105,000","$109,000","$120,000","$129,000"],
+    answer:3,
+    ex:"小修属<b>费用</b>(不资本化)；改良、添置<b>资本化</b>：<span class='calc'>100,000 + 20,000 + 9,000 = 129,000</span>。"},
+   {q:"Cue 公司 20X0年以 $27,000 购入新卡车。20X3年1月1日累计折旧 $20,000 时，以 $7,000 现金出售。应确认的处置损益为？",
+    options:["$0","$7,000","$10,000","$14,000"],
+    answer:0,
+    ex:"账面价值 = 27,000 − 20,000 = 7,000；售价 7,000，<b>不盈不亏，损益为 0</b>。"},
+   {q:"下列哪种资产享有的法定保护期<b>最长</b>？",
+    options:["专利","版权","商标","以上保护期相同"],
+    answer:1,
+    ex:"<b>版权</b>保护期最长(通常作者终身 + 70 年)；专利约 20 年；商标可续展但单期有限。"},
+   {q:"用于表示<b>自然资源</b>资产耗减(枯竭)的术语是？",
+    options:["摊销(amortization)","折旧(depreciation)","折耗(depletion)","终止(termination)"],
+    answer:2,
+    ex:"有形固定资产用“折旧”，无形资产用“摊销”，<b>自然资源</b>用<b>折耗(depletion)</b>。"}
+  ],
+  ex:[
+   {title:"练习：Lance's Truck Stop — 直线 / 工作量 / 双倍余额递减 三法折旧",
+    prob:`去年年初购入自动洗车机 $135,000，预计 10 年后可按 $35,000 售出(残值)。预计一生可洗 50,000 辆车。
+      去年(第1年)洗 7,000 辆，今年(第2年)洗 9,000 辆。<br>
+      要求：用 a.直线法 &nbsp;b.工作量法(按服务量) &nbsp;c.双倍余额递减法，计算前两年各自的折旧费用。`,
+    sol:`<h4>基础</h4>
+      <div class="calc">可折旧基数 = 成本 − 残值 = 135,000 − 35,000 = 100,000</div>
+      <h4>a. 直线法</h4>
+      <div class="calc">每年 = 100,000 / 10 = 10,000
+第1年 = 10,000 ｜ 第2年 = 10,000</div>
+      <h4>b. 工作量法（按洗车量）</h4>
+      <div class="calc">每辆 = 100,000 / 50,000 = $2
+第1年 = 7,000 × 2 = 14,000
+第2年 = 9,000 × 2 = 18,000</div>
+      <h4>c. 双倍余额递减法（率 = 2/10 = 20%，不扣残值）</h4>
+      <div class="calc">第1年 = 135,000 × 20% = 27,000   账面余 108,000
+第2年 = 108,000 × 20% = 21,600   账面余 86,400</div>
+      <div class="ans">直线：10,000 / 10,000 ｜ 工作量：14,000 / 18,000 ｜ 双倍余额递减：27,000 / 21,600</div>`}
+  ]
+ }
+};
+
+/* ===================== 渲染与交互 ===================== */
+const KEYS=["a","b","c","d","e","f","g","h"];
+const state={chap:5, results:{}}; // results[chap] = {answered, ok, no}
+
+function ensureRes(c){ if(!state.results[c]) state.results[c]={answered:0,ok:0,no:0,picked:{}}; return state.results[c]; }
+
+function buildTabs(){
+  const box=document.getElementById("chapTabs"); box.innerHTML="";
+  Object.keys(DATA).forEach(c=>{
+    const b=document.createElement("button");
+    b.className="chip"+(+c===state.chap?" active":"");
+    b.textContent="第"+c+"章";
+    b.onclick=()=>{state.chap=+c; render();};
+    box.appendChild(b);
+  });
+}
+
+function updateScore(){
+  const c=state.chap, r=ensureRes(c), d=DATA[c];
+  document.getElementById("chapTitle").textContent=d.title;
+  document.getElementById("sTot").textContent=d.mc.length;
+  document.getElementById("sAns").textContent=r.answered;
+  document.getElementById("sOk").textContent=r.ok;
+  document.getElementById("sNo").textContent=r.no;
+}
+
+function render(){
+  buildTabs();
+  const c=state.chap, d=DATA[c], r=ensureRes(c);
+  const root=document.getElementById("content"); root.innerHTML="";
+
+  /* 选择题板块 */
+  const mcHead=document.createElement("div"); mcHead.className="section-head";
+  mcHead.innerHTML=`<span class="tag">MC</span><h2>选择题</h2><span class="cnt">${d.mc.length} 题</span>`;
+  root.appendChild(mcHead);
+
+  d.mc.forEach((q,i)=>{
+    const card=document.createElement("div"); card.className="q";
+    const stem=document.createElement("div"); stem.className="stem";
+    stem.innerHTML=`<div class="qno">${i+1}</div><div class="qtext">${q.q}</div>`;
+    card.appendChild(stem);
+
+    const opts=document.createElement("div"); opts.className="opts";
+    q.options.forEach((opt,oi)=>{
+      const o=document.createElement("div"); o.className="opt";
+      o.innerHTML=`<span class="key">${KEYS[oi]}.</span><span>${opt}</span>`;
+      o.onclick=()=>pick(c,i,oi,card,opts,q);
+      opts.appendChild(o);
+    });
+    card.appendChild(opts);
+
+    const ex=document.createElement("div"); ex.className="explain";
+    ex.innerHTML=`<span class="lbl">解析</span><div>${q.ex}</div>`;
+    card.appendChild(ex);
+
+    // 若已答过，恢复状态
+    const picked=r.picked[i];
+    if(picked!==undefined) applyAnswered(opts,q,picked,ex);
+    root.appendChild(card);
+  });
+
+  /* 计算题板块 */
+  const exHead=document.createElement("div"); exHead.className="section-head";
+  exHead.innerHTML=`<span class="tag ex">EX</span><h2>计算 / 练习题</h2><span class="cnt">${d.ex.length} 题</span>`;
+  root.appendChild(exHead);
+
+  d.ex.forEach(item=>{
+    const box=document.createElement("div"); box.className="ex";
+    const head=document.createElement("div"); head.className="exhead";
+    head.innerHTML=`<p class="extitle">${item.title}</p><div class="prob">${item.prob}</div>`;
+    box.appendChild(head);
+    const btn=document.createElement("button"); btn.className="reveal"; btn.textContent="查看完整解答 ▾";
+    const sol=document.createElement("div"); sol.className="sol"; sol.innerHTML=item.sol;
+    btn.onclick=()=>{ const on=sol.classList.toggle("show"); btn.textContent=on?"收起解答 ▴":"查看完整解答 ▾"; };
+    box.appendChild(btn); box.appendChild(sol);
+    root.appendChild(box);
+  });
+
+  updateScore();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function pick(c,i,oi,card,opts,q){
+  const r=ensureRes(c);
+  if(r.picked[i]!==undefined) return; // 已答，锁定
+  r.picked[i]=oi; r.answered++;
+  if(oi===q.answer) r.ok++; else r.no++;
+  const ex=card.querySelector(".explain");
+  applyAnswered(opts,q,oi,ex);
+  updateScore();
+}
+
+function applyAnswered(opts,q,picked,ex){
+  [...opts.children].forEach((o,oi)=>{
+    o.classList.add("disabled");
+    if(oi===q.answer){o.classList.add("correct");
+      o.insertAdjacentHTML("beforeend",`<span class="mark ok">✓</span>`);}
+    if(oi===picked && picked!==q.answer){o.classList.add("wrong");
+      o.insertAdjacentHTML("beforeend",`<span class="mark no">✗</span>`);}
+  });
+  ex.classList.add("show");
+}
+
+document.getElementById("resetBtn").onclick=()=>{
+  state.results[state.chap]={answered:0,ok:0,no:0,picked:{}};
+  render();
+};
+
+render();
+</script>
+</body>
+</html>
