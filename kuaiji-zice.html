@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会计学 · 自测账簿（计算 + 演示案例）</title>
+<style>
+  :root{
+    --paper:#F6F3EB; --paper-2:#FBF9F3;
+    --ink:#1B3A4B; --ink-soft:#46606C;
+    --rule:#D9D1BE; --rule-strong:#B9AE94;
+    --green:#2E6B4F; --green-bg:#E7F0E8;
+    --red:#A4392B; --red-bg:#F5E6E2;
+    --debit:#EDF1F4;
+    --gold:#9A7B33;
+    --shadow:0 1px 0 var(--rule), 0 12px 30px -22px rgba(27,58,75,.5);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+    line-height:1.6;font-size:16px;}
+  .num{font-family:ui-monospace,"SF Mono","Roboto Mono","Courier New",monospace;font-variant-numeric:tabular-nums;}
+  .wrap{max-width:780px;margin:0 auto;padding:0 18px 90px;}
+
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(246,243,235,.94);
+    backdrop-filter:blur(6px);border-bottom:1px solid var(--rule);
+    display:flex;align-items:center;gap:12px;padding:10px 18px;max-width:780px;margin:0 auto;}
+  .topbar .brand{font-family:Georgia,"Songti SC",serif;font-weight:700;letter-spacing:.03em;}
+  .topbar .toHome{margin-left:auto;font:inherit;font-size:13px;cursor:pointer;
+    border:1px solid var(--rule-strong);background:transparent;color:var(--ink);
+    padding:6px 13px;border-radius:999px;}
+  .topbar .toHome:hover{background:var(--debit);}
+  .topbar .toHome:focus-visible{outline:3px solid var(--green);outline-offset:2px;}
+
+  header.book{border:1.5px solid var(--ink);background:var(--paper-2);border-radius:4px;
+    padding:20px 22px 16px;box-shadow:var(--shadow);margin-top:18px;}
+  .eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);}
+  header.book h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-size:28px;
+    letter-spacing:.04em;margin:.2em 0 .1em;font-weight:700;}
+  header.book .sub{color:var(--ink-soft);font-size:14px;}
+  .ledger-rule{border:none;border-top:1px solid var(--ink);border-bottom:3px double var(--ink);height:4px;margin:14px 0 0;}
+
+  .toc-group{margin:26px 0 8px;}
+  .toc-group h2{font-family:Georgia,"Songti SC",serif;font-size:17px;margin:0 0 2px;
+    border-bottom:3px double var(--rule-strong);padding-bottom:7px;display:flex;align-items:baseline;gap:8px;}
+  .toc-group h2 .pt{font-size:11px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;}
+  .toc-list{list-style:none;margin:8px 0 0;padding:0;}
+  .toc-list li{margin:0;}
+  .toc-list button{width:100%;text-align:left;font:inherit;cursor:pointer;background:var(--paper-2);
+    border:1px solid var(--rule);border-radius:5px;padding:11px 14px;margin:7px 0;
+    display:flex;align-items:center;gap:12px;color:var(--ink);transition:border-color .12s,background .12s,transform .08s;}
+  .toc-list button:hover{background:var(--debit);border-color:var(--rule-strong);}
+  .toc-list button:active{transform:translateY(1px);}
+  .toc-list button:focus-visible{outline:3px solid var(--green);outline-offset:2px;}
+  .toc-list .ch{font-family:ui-monospace,"SF Mono",monospace;font-weight:700;color:var(--ink-soft);
+    background:var(--debit);border:1px solid var(--rule);border-radius:4px;padding:3px 8px;font-size:12.5px;min-width:54px;text-align:center;flex-shrink:0;}
+  .toc-list .ti{font-weight:600;font-size:15px;}
+  .toc-list .de{display:block;font-size:12.5px;color:var(--ink-soft);font-weight:400;margin-top:1px;}
+
+  .panel{display:none;}
+  .panel.active{display:block;animation:fade .22s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+  .panel-hd{margin:22px 0 4px;}
+  .panel-hd .kicker{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);}
+  .panel-hd h2{font-family:Georgia,"Songti SC",serif;font-size:22px;margin:3px 0 0;
+    border-bottom:3px double var(--rule-strong);padding-bottom:9px;}
+  .panel-hd .note{color:var(--ink-soft);font-size:13px;margin:8px 0 0;}
+
+  .balance{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  .balance .cell{flex:1 1 120px;min-width:110px;border:1px solid var(--rule-strong);border-radius:4px;padding:8px 12px;background:var(--debit);}
+  .balance .cell .k{font-size:11px;letter-spacing:.1em;color:var(--ink-soft);text-transform:uppercase;}
+  .balance .cell .v{font-size:21px;font-weight:700;}
+  .balance .cell .v small{font-size:12px;color:var(--ink-soft);font-weight:400;}
+
+  .card{background:var(--paper-2);border:1px solid var(--rule-strong);border-radius:5px;
+    padding:18px;margin:16px 0;box-shadow:var(--shadow);}
+  .qnum{font-size:12px;letter-spacing:.2em;color:var(--ink-soft);text-transform:uppercase;}
+  .qtext{margin:6px 0 14px;font-size:16.5px;}
+  .qtext .num{font-weight:600;}
+
+  .opts{display:flex;flex-direction:column;gap:8px;}
+  .opt{text-align:left;font:inherit;cursor:pointer;border:1px solid var(--rule-strong);background:var(--paper);
+    border-radius:4px;padding:11px 14px;display:flex;gap:10px;align-items:baseline;transition:background .12s,border-color .12s;}
+  .opt:hover:not(:disabled){background:var(--debit);}
+  .opt:focus-visible{outline:3px solid var(--green);outline-offset:2px;}
+  .opt .tag{font-weight:700;color:var(--ink-soft);min-width:1.2em;}
+  .opt:disabled{cursor:default;}
+  .opt.correct{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:600;text-decoration:underline;text-underline-offset:3px;}
+  .opt.wrong{background:var(--red-bg);border-color:var(--red);color:var(--red);text-decoration:line-through;text-decoration-color:var(--red);}
+  .opt.correct .tag{color:var(--green);} .opt.wrong .tag{color:var(--red);}
+  .explain{margin-top:12px;border-left:3px solid var(--ink);background:var(--debit);padding:10px 14px;border-radius:0 4px 4px 0;font-size:14.5px;display:none;}
+  .explain.show{display:block;}
+  .explain .formula{font-family:ui-monospace,"SF Mono",monospace;font-size:13.5px;color:var(--ink-soft);display:block;margin-top:4px;}
+
+  .given{border:1px solid var(--rule-strong);border-radius:4px;overflow:hidden;margin:6px 0 16px;}
+  .given .gh{background:var(--ink);color:var(--paper-2);font-size:12px;letter-spacing:.16em;padding:6px 12px;text-transform:uppercase;}
+  table.gt{width:100%;border-collapse:collapse;font-size:14.5px;}
+  table.gt td{padding:7px 12px;border-bottom:1px solid var(--rule);}
+  table.gt tr:last-child td{border-bottom:none;}
+  table.gt td:last-child{text-align:right;font-family:ui-monospace,"SF Mono",monospace;font-variant-numeric:tabular-nums;}
+  table.gt tr:nth-child(even){background:rgba(217,209,190,.18);}
+  .sub{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 0;border-bottom:1px dotted var(--rule);}
+  .sub:last-of-type{border-bottom:none;}
+  .sub .lab{flex:1 1 230px;font-size:15px;}
+  .sub .lab .idx{font-weight:700;color:var(--ink-soft);margin-right:6px;}
+  .sub input{width:120px;font:inherit;font-family:ui-monospace,"SF Mono",monospace;padding:8px 10px;
+    border:1px solid var(--rule-strong);border-radius:4px;background:var(--paper);text-align:right;}
+  .sub input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(27,58,75,.12);}
+  .sub input.ok{border-color:var(--green);background:var(--green-bg);color:var(--green);}
+  .sub input.no{border-color:var(--red);background:var(--red-bg);color:var(--red);}
+  .sub .mark{min-width:22px;font-weight:700;font-size:18px;text-align:center;}
+  .sub .unit{color:var(--ink-soft);font-size:13px;min-width:40px;}
+
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+  button.act{font:inherit;cursor:pointer;border-radius:4px;padding:10px 18px;font-size:14.5px;font-weight:600;
+    border:1px solid var(--ink);background:var(--ink);color:var(--paper-2);transition:opacity .15s;}
+  button.act.ghost{background:transparent;color:var(--ink);}
+  button.act:hover{opacity:.88;}
+  button.act:focus-visible{outline:3px solid var(--green);outline-offset:2px;}
+
+  .case-q{font-size:15.5px;}
+  .case-q p{margin:.5em 0;}
+  .case-q .lead{color:var(--ink-soft);font-style:italic;font-size:14px;}
+  .req{margin:14px 0 0;border-left:3px solid var(--gold);background:#FBF6EA;padding:10px 14px;border-radius:0 4px 4px 0;}
+  .req .rt{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:4px;}
+  .req ol{margin:0;padding-left:20px;}
+  .req li{margin:4px 0;}
+  ul.tx{margin:.4em 0;padding-left:18px;}
+  ul.tx li{margin:4px 0;}
+  .tx .d{font-family:ui-monospace,"SF Mono",monospace;font-weight:700;color:var(--ink-soft);}
+
+  .solution{display:none;margin-top:16px;border-top:3px double var(--rule-strong);padding-top:14px;}
+  .solution.show{display:block;}
+  .sol-tag{display:inline-block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    background:var(--green);color:#fff;padding:3px 10px;border-radius:3px;margin-bottom:6px;}
+  .keyans{background:var(--green-bg);border:1px solid var(--green);border-radius:5px;padding:10px 14px;margin:6px 0 14px;font-size:14px;}
+  .keyans b{color:var(--green);}
+  .sol h4{font-family:Georgia,"Songti SC",serif;font-size:15.5px;margin:16px 0 6px;color:var(--ink);}
+  .sol p{font-size:14.5px;margin:.5em 0;}
+  .sol code{font-family:ui-monospace,"SF Mono",monospace;font-size:13.5px;background:var(--debit);padding:1px 5px;border-radius:3px;}
+  .sol ol,.sol ul{font-size:14.5px;}
+  .calc{font-family:ui-monospace,"SF Mono",monospace;font-size:13px;background:var(--paper);border:1px solid var(--rule);
+    border-radius:4px;padding:10px 12px;margin:8px 0;white-space:pre-wrap;line-height:1.7;}
+
+  .fs{border:1px solid var(--rule-strong);border-radius:5px;overflow:hidden;margin:10px 0 14px;background:var(--paper-2);}
+  .fs-h{background:#FBF6EA;text-align:center;padding:9px 8px;border-bottom:1px solid var(--rule-strong);}
+  .fs-h b{font-family:Georgia,"Songti SC",serif;color:var(--ink);font-size:14.5px;display:block;}
+  .fs-h span{font-size:12px;color:var(--ink-soft);}
+  table.fst{width:100%;border-collapse:collapse;font-size:13.5px;}
+  table.fst td{padding:4px 12px;}
+  table.fst td:last-child{text-align:right;font-family:ui-monospace,"SF Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  table.fst td.lbl2{text-align:right;}
+  .fst .sec td{font-weight:700;color:var(--ink);padding-top:8px;}
+  .fst .i1 td:first-child{padding-left:24px;}
+  .fst .i2 td:first-child{padding-left:38px;}
+  .fst .tot td{border-top:1px solid var(--ink-soft);font-weight:600;}
+  .fst .grand td{border-top:1px solid var(--ink);border-bottom:3px double var(--ink);font-weight:700;}
+
+  table.jet{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0;background:var(--paper-2);border:1px solid var(--rule-strong);border-radius:5px;overflow:hidden;}
+  table.jet th{background:var(--ink);color:var(--paper-2);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;text-align:right;}
+  table.jet th:first-child{text-align:left;}
+  table.jet td{padding:5px 10px;border-bottom:1px solid var(--rule);}
+  table.jet tr:last-child td{border-bottom:none;}
+  table.jet td:nth-child(2),table.jet td:nth-child(3){text-align:right;font-family:ui-monospace,"SF Mono",monospace;width:78px;}
+  table.jet td.cr{padding-left:30px;color:var(--ink-soft);}
+  table.jet tr.je-sep td{border-top:2px solid var(--rule-strong);}
+
+  footer{margin-top:34px;text-align:center;color:var(--ink-soft);font-size:12.5px;}
+  footer .reset{margin-bottom:10px;}
+
+  @media (max-width:480px){
+    header.book h1{font-size:24px;}
+    .wrap{padding:0 13px 80px;}
+    .sub .lab{flex-basis:100%;}
+    table.fst td,table.jet td{padding-left:8px;padding-right:8px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">会计 · 自测账簿</span>
+  <button class="toHome" id="homeBtn">☰ 目录</button>
+</div>
+
+<div class="wrap">
+
+<!-- 目录 -->
+<section id="p-toc" class="panel active">
+  <header class="book">
+    <div class="eyebrow">Financial Accounting · Libby · Self-Test</div>
+    <h1>会计学 · 自测账簿</h1>
+    <div class="sub">第一部分 计算自测 · 第二部分 演示案例（Ch1–12）</div>
+    <hr class="ledger-rule">
+  </header>
+
+  <div class="toc-group">
+    <h2><span class="pt">Part Ⅰ</span>计算自测</h2>
+    <ul class="toc-list">
+      <li><button data-go="p-mc"><span class="ch">单选</span><span><span class="ti">单选计算题</span><span class="de">损益表逐层 · 各类财务比率 · 杜邦分解（14 题，即时批改）</span></span></button></li>
+      <li><button data-go="p-big"><span class="ch">填空</span><span><span class="ti">计算大题</span><span class="de">编制损益表 + 比率综合（逐空核对）</span></span></button></li>
+      <li><button data-go="p-cycle"><span class="ch">综合</span><span><span class="ti">会计循环综合</span><span class="de">分录 → 试算平衡 → 流动比率</span></span></button></li>
+    </ul>
+  </div>
+
+  <div class="toc-group">
+    <h2><span class="pt">Part Ⅱ</span>演示案例 Demonstration Cases</h2>
+    <ul class="toc-list">
+      <li><button data-go="p-c1"><span class="ch">Ch 1</span><span><span class="ti">财务报表编制</span><span class="de">百思买 · 资产负债表 / 损益表 / 股东权益表</span></span></button></li>
+      <li><button data-go="p-c2"><span class="ch">Ch 2</span><span><span class="ti">交易分析 · 分录 · T 账户</span><span class="de">Terrific Lawn · 分类资产负债表 · 投融资分类</span></span></button></li>
+      <li><button data-go="p-c3"><span class="ch">Ch 3</span><span><span class="ti">经营交易 · 未调整损益表</span><span class="de">Terrific Lawn · 现金流量 O / I / F 分类</span></span></button></li>
+      <li><button data-go="p-c4"><span class="ch">Ch 4</span><span><span class="ti">调整 · 结账 · 财务报表 · 比率</span><span class="de">Terrific Lawn · 完整会计循环收尾</span></span></button></li>
+      <li><button data-go="p-c5"><span class="ch">Ch 5</span><span><span class="ti">多步式损益表 · ROA 分析</span><span class="de">微软 · ROA 利润驱动分解</span></span></button></li>
+      <li><button data-go="p-c6a"><span class="ch">Ch 6A</span><span><span class="ti">净销售额 · 坏账估计</span><span class="de">Wholesale · 销售百分比法 / 应收账款老化法</span></span></button></li>
+      <li><button data-go="p-c6b"><span class="ch">Ch 6B</span><span><span class="ti">银行存款余额调节表</span><span class="de">Laura · 在途存款 / 未兑现支票 / 手续费</span></span></button></li>
+      <li><button data-go="p-c7"><span class="ch">Ch 7</span><span><span class="ti">FIFO / LIFO · 存货周转</span><span class="de">Balent · 涨价环境的方法选择</span></span></button></li>
+      <li><button data-go="p-c8a"><span class="ch">Ch 8A</span><span><span class="ti">长期资产 · 折旧 · 减值</span><span class="de">Diversified · 资本化 / 双倍余额递减 / 固定资产周转</span></span></button></li>
+      <li><button data-go="p-c8b"><span class="ch">Ch 8B</span><span><span class="ti">自然资源 · 折耗分录</span><span class="de">砾石矿 · 产量法折耗</span></span></button></li>
+      <li><button data-go="p-c12"><span class="ch">Ch 12</span><span><span class="ti">现金流量表 · 间接法</span><span class="de">National Beverage · 经营 / 投资 / 筹资</span></span></button></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 单选 -->
+<section id="p-mc" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅰ · 计算自测</div><h2>单选计算题</h2>
+    <p class="note">选定后即批改并展开解析（解析中才给公式）。共 <span id="mcN" class="num">0</span> 题。</p></div>
+  <div class="balance">
+    <div class="cell"><div class="k">已答</div><div class="v"><span id="mcDone" class="num">0</span><small> / <span id="mcTotal" class="num">0</span></small></div></div>
+    <div class="cell"><div class="k">正确</div><div class="v"><span id="mcRight" class="num">0</span></div></div>
+    <div class="cell"><div class="k">正确率</div><div class="v"><span id="mcRate" class="num">—</span></div></div>
+  </div>
+  <div id="mcList"></div>
+</section>
+
+<!-- 计算大题 -->
+<section id="p-big" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅰ · 计算自测</div><h2>计算大题</h2>
+    <p class="note">逐空填数 → 点「核对本题」批改 → 需要时展开完整解答。百分比填 <span class="num">40</span> 或 <span class="num">0.4</span> 均可。</p></div>
+  <div id="bigList"></div>
+</section>
+
+<!-- 会计循环综合 -->
+<section id="p-cycle" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅰ · 计算自测</div><h2>会计循环综合题</h2>
+    <p class="note">由交易自行推算余额、验证试算平衡，再算比率。借贷分录在解答里核对。</p></div>
+  <div id="cycleList"></div>
+</section>
+
+<!-- Ch1 百思买 -->
+<section id="p-c1" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅱ · Demonstration Case · Chapter 1</div><h2>财务报表编制 · 百思买</h2></div>
+  <div class="card">
+    <div class="qnum">题目 · Best Buy Co., Inc.</div>
+    <div class="case-q">
+      <p class="lead">在阅读建议解答前，请先独立完成。</p>
+      <p>百思买通过 1,000 多家门店及在线平台销售消费电子和家用电器。下列项目及金额改编自其截至 <b>2020 年 2 月 1 日</b> 财年的损益表与资产负债表（单位：百万美元）。假设本年度未发行或注销股票；年初留存收益 <span class="num">$2,448</span>，股息 <span class="num">$536</span>。</p>
+      <div class="given"><div class="gh">项目列表（百万美元）</div><table class="gt"><tbody>
+        <tr><td>Accounts payable 应付账款</td><td>8,060</td></tr>
+        <tr><td>Accounts receivable 应收账款</td><td>1,149</td></tr>
+        <tr><td>Cash 现金</td><td>2,229</td></tr>
+        <tr><td>Common stock 普通股</td><td>26</td></tr>
+        <tr><td>Cost of sales 销售成本</td><td>33,590</td></tr>
+        <tr><td>Income before income taxes 税前利润</td><td>1,993</td></tr>
+        <tr><td>Income tax expense 所得税费用</td><td>452</td></tr>
+        <tr><td>Interest expense 利息费用</td><td>64</td></tr>
+        <tr><td>Merchandise inventories 商品存货</td><td>5,479</td></tr>
+        <tr><td>Long-term debt 长期负债</td><td>4,052</td></tr>
+        <tr><td>Net income 净利润</td><td>1,541</td></tr>
+        <tr><td>Sales revenue 销售收入</td><td>43,638</td></tr>
+        <tr><td>Net property and equipment 固定资产净额</td><td>6,734</td></tr>
+        <tr><td>Retained earnings 留存收益</td><td>3,453</td></tr>
+        <tr><td>Selling, general &amp; admin. expenses 销管费用</td><td>7,991</td></tr>
+        <tr><td>Total shareholders' equity 股东权益合计</td><td>3,479</td></tr>
+      </tbody></table></div>
+      <div class="req"><div class="rt">要求 Required</div><ol>
+        <li>分别参照格式编制 <b>资产负债表、损益表、股东权益表</b>。</li>
+        <li>说明这三张报表各提供了什么信息。</li>
+        <li>指出百思买年报中还会包含的另一张报表。</li>
+        <li>即使法规不强制，百思买为何可能自愿接受独立审计？</li>
+      </ol></div>
+    </div>
+    <div class="btnrow"><button class="act solBtn" type="button">查看完整解答</button></div>
+    <div class="solution sol">
+      <span class="sol-tag">Suggested Solution</span>
+      <h4>1 · 损益表</h4>
+      <div class="fs"><div class="fs-h"><b>BEST BUY CO., INC — Income Statement</b><span>For the Year Ended February 1, 2020（百万美元）</span></div>
+      <table class="fst">
+        <tr class="sec"><td>Revenues 收入</td><td></td></tr>
+        <tr class="i1"><td>Sales revenue 销售收入</td><td>$43,638</td></tr>
+        <tr class="sec"><td>Expenses 费用</td><td></td></tr>
+        <tr class="i1"><td>Cost of sales 销售成本</td><td>33,590</td></tr>
+        <tr class="i1"><td>Selling, general &amp; administrative 销管费用</td><td>7,991</td></tr>
+        <tr class="i1"><td>Interest expense 利息费用</td><td>64</td></tr>
+        <tr class="tot"><td>Income before income taxes 税前利润</td><td>1,993</td></tr>
+        <tr><td>Income tax expense 所得税费用</td><td>452</td></tr>
+        <tr class="grand"><td>Net income 净利润</td><td>$1,541</td></tr>
+      </table></div>
+      <h4>1 · 资产负债表</h4>
+      <div class="fs"><div class="fs-h"><b>BEST BUY CO., INC — Balance Sheet</b><span>At February 1, 2020（百万美元）</span></div>
+      <table class="fst">
+        <tr class="sec"><td>Assets 资产</td><td></td></tr>
+        <tr class="i1"><td>Cash 现金</td><td>$2,229</td></tr>
+        <tr class="i1"><td>Accounts receivable 应收账款</td><td>1,149</td></tr>
+        <tr class="i1"><td>Merchandise inventories 商品存货</td><td>5,479</td></tr>
+        <tr class="i1"><td>Net property &amp; equipment 固定资产净额</td><td>6,734</td></tr>
+        <tr class="grand"><td>Total assets 资产合计</td><td>$15,591</td></tr>
+        <tr class="sec"><td>Liabilities &amp; shareholders' equity</td><td></td></tr>
+        <tr class="i1"><td>Accounts payable 应付账款</td><td>$8,060</td></tr>
+        <tr class="i1"><td>Long-term debt 长期负债</td><td>4,052</td></tr>
+        <tr class="tot"><td>Total liabilities 负债合计</td><td>12,112</td></tr>
+        <tr class="i1"><td>Common stock 普通股</td><td>26</td></tr>
+        <tr class="i1"><td>Retained earnings 留存收益</td><td>3,453</td></tr>
+        <tr class="tot"><td>Total shareholders' equity 股东权益合计</td><td>3,479</td></tr>
+        <tr class="grand"><td>Total liabilities &amp; equity</td><td>$15,591</td></tr>
+      </table></div>
+      <h4>1 · 股东权益变动表</h4>
+      <div class="fs"><div class="fs-h"><b>Statement of Stockholders' Equity</b><span>For the Year Ended February 1, 2020（百万美元）</span></div>
+      <table class="fst">
+        <tr class="sec"><td></td><td>Common / Retained</td></tr>
+        <tr><td>Balance February 2, 2019</td><td>$26 / $2,448</td></tr>
+        <tr><td>+ Net income 净利润</td><td>— / +1,541</td></tr>
+        <tr><td>− Dividends 股息</td><td>— / (536)</td></tr>
+        <tr class="grand"><td>Balance February 1, 2020</td><td>$26 / $3,453</td></tr>
+      </table></div>
+      <h4>2 · 三张报表提供的信息</h4>
+      <p>资产负债表报告会计主体在 <b>某一时点</b> 的资产、负债与股东权益；损益表报告 <b>会计期间内</b> 收入减费用这一核心业绩；股东权益变动表报告会计期间内权益账户的变动。</p>
+      <h4>3 · 其他报表</h4>
+      <p>百思买还会披露一张 <b>现金流量表</b>（Statement of Cash Flows）。</p>
+      <h4>4 · 自愿审计的原因</h4>
+      <p>若报表使用者知道审计人员须满足专业 <b>道德与胜任能力</b> 标准，就会对财务信息的准确性更有信心。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Ch2 Terrific Lawn -->
+<section id="p-c2" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅱ · Demonstration Case · Chapter 2</div><h2>交易分析 · 分录 · T 账户</h2></div>
+  <div class="card">
+    <div class="qnum">题目 · Terrific Lawn Maintenance Corporation</div>
+    <div class="case-q">
+      <p>2023 年 4 月 1 日，三名大学生创立 Terrific Lawn。截至 4 月 7 日的交易：</p>
+      <ul class="tx">
+        <li><span class="d">a.</span> 向 3 名投资者各发行 500 股（共 1,500 股），面值 $0.10，换取现金 <span class="num">$9,000</span>。</li>
+        <li><span class="d">b.</span> 购入耙子等手工具（设备），标价 $690，实付 $600；付现 $200，余额签 3 个月票据。</li>
+        <li><span class="d">c.</span> 向 XYZ 订购 3 台割草机和 2 台修边机，共 <span class="num">$4,000</span>。</li>
+        <li><span class="d">d.</span> 现金购入 4 英亩土地（未来车库用地）<span class="num">$5,000</span>。</li>
+        <li><span class="d">e.</span> 收到订购的割草/修边机，签 18 个月内全额付 XYZ 的票据。</li>
+        <li><span class="d">f.</span> 将 1 英亩土地以 $1,250 卖给市政府作公园，收取市政府票据（月底前付款）。</li>
+        <li><span class="d">g.</span> 一位股东个人向银行借款 $3,000 自用。</li>
+      </ul>
+      <div class="req"><div class="rt">要求 Required</div><ol>
+        <li>交易分析、按时间编制分录、计算各 T 账户期末余额。</li>
+        <li>编制 4 月 7 日的 <b>分类资产负债表</b>。</li>
+        <li>将 (a)–(g) 标为影响现金的投资 / 筹资活动及方向（+I/−I/+F/−F）。</li>
+      </ol></div>
+    </div>
+    <div class="btnrow"><button class="act solBtn" type="button">查看完整解答</button></div>
+    <div class="solution sol">
+      <span class="sol-tag">Suggested Solution</span>
+      <div class="keyans"><b>关键：</b>(c)(g) 不入账。Cash 余 $3,800；Equipment $4,600；Land $3,750；总资产 <b>$13,400</b>，借贷平衡。</div>
+      <h4>1 · 分录</h4>
+      <table class="jet"><tr><th>科目</th><th>借</th><th>贷</th></tr>
+        <tr><td>(a) Cash 现金 (+A)</td><td>9,000</td><td></td></tr>
+        <tr><td class="cr">Common stock 普通股 (+SE)</td><td></td><td>150</td></tr>
+        <tr><td class="cr">Additional paid-in capital 资本公积 (+SE)</td><td></td><td>8,850</td></tr>
+        <tr class="je-sep"><td>(b) Equipment 设备 (+A)</td><td>600</td><td></td></tr>
+        <tr><td class="cr">Cash 现金 (−A)</td><td></td><td>200</td></tr>
+        <tr><td class="cr">Short-term notes payable 短期应付票据 (+L)</td><td></td><td>400</td></tr>
+        <tr class="je-sep"><td>(c) 不构成交易（以承诺换承诺）</td><td>—</td><td>—</td></tr>
+        <tr class="je-sep"><td>(d) Land 土地 (+A)</td><td>5,000</td><td></td></tr>
+        <tr><td class="cr">Cash 现金 (−A)</td><td></td><td>5,000</td></tr>
+        <tr class="je-sep"><td>(e) Equipment 设备 (+A)</td><td>4,000</td><td></td></tr>
+        <tr><td class="cr">Long-term notes payable 长期应付票据 (+L)</td><td></td><td>4,000</td></tr>
+        <tr class="je-sep"><td>(f) Notes receivable 应收票据 (+A)</td><td>1,250</td><td></td></tr>
+        <tr><td class="cr">Land 土地 (−A) ＝ $5,000 的 1/4</td><td></td><td>1,250</td></tr>
+        <tr class="je-sep"><td>(g) 不构成主体交易（主体分离假设）</td><td>—</td><td>—</td></tr>
+      </table>
+      <div class="calc">T 账户期末余额：
+Cash      = 9,000 − 200 − 5,000 = 3,800
+Notes rec.= 1,250
+Equipment = 600 + 4,000 = 4,600
+Land      = 5,000 − 1,250 = 3,750
+ST notes payable = 400   LT notes payable = 4,000
+Common stock = 150   APIC = 8,850</div>
+      <h4>2 · 分类资产负债表</h4>
+      <div class="fs"><div class="fs-h"><b>TERRIFIC LAWN — Balance Sheet</b><span>April 7, 2023</span></div>
+      <table class="fst">
+        <tr class="sec"><td>Assets · Current assets</td><td></td></tr>
+        <tr class="i1"><td>Cash 现金</td><td>$3,800</td></tr>
+        <tr class="i1"><td>Notes receivable 应收票据</td><td>1,250</td></tr>
+        <tr class="tot i1"><td>Total current assets 流动资产合计</td><td>5,050</td></tr>
+        <tr><td>Equipment 设备</td><td>4,600</td></tr>
+        <tr><td>Land 土地</td><td>3,750</td></tr>
+        <tr class="grand"><td>Total assets 资产合计</td><td>$13,400</td></tr>
+        <tr class="sec"><td>Liabilities &amp; SE · Current liabilities</td><td></td></tr>
+        <tr class="i1"><td>Short-term notes payable 短期应付票据</td><td>$400</td></tr>
+        <tr class="tot i1"><td>Total current liabilities</td><td>400</td></tr>
+        <tr><td>Long-term notes payable 长期应付票据</td><td>4,000</td></tr>
+        <tr class="tot"><td>Total liabilities 负债合计</td><td>4,400</td></tr>
+        <tr class="sec"><td>Stockholders' equity</td><td></td></tr>
+        <tr class="i1"><td>Common stock（$0.10 par）</td><td>150</td></tr>
+        <tr class="i1"><td>Additional paid-in capital</td><td>8,850</td></tr>
+        <tr class="tot i1"><td>Total stockholders' equity</td><td>9,000</td></tr>
+        <tr class="grand"><td>Total liabilities &amp; equity</td><td>$13,400</td></tr>
+      </table></div>
+      <h4>3 · 现金流量分类</h4>
+      <p>仅 (a)(b)(d) 影响现金：</p>
+      <div class="calc">(a) +F  $9,000   （股东投资，筹资流入）
+(b) −I  $200    （购设备付现，投资流出）
+(d) −I  $5,000  （购土地付现，投资流出）</div>
+    </div>
+  </div>
+</section>
+
+<!-- Ch3 Terrific Lawn -->
+<section id="p-c3" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅱ · Demonstration Case · Chapter 3</div><h2>经营交易 · 未调整损益表</h2></div>
+  <div class="card">
+    <div class="qnum">题目 · Terrific Lawn（接 Ch2）</div>
+    <div class="case-q">
+      <p>承 4 月 7 日资产负债表，4 月剩余时间的活动：</p>
+      <ul class="tx">
+        <li><span class="d">a.</span> 购买并使用汽油，付现 $90。</li>
+        <li><span class="d">b.</span> 月初收市政府预付 4–7 月服务费 $1,600（每月 $400），全额记 <b>未赚取收入</b>。</li>
+        <li><span class="d">c.</span> 购 4–9 月共 6 个月保险 $300，全额记 <b>预付费用</b>。</li>
+        <li><span class="d">d.</span> 为住宅客户除草，4 月开票 $5,200（每两周结算）。</li>
+        <li><span class="d">e.</span> 住宅客户偿还账款 $3,500。</li>
+        <li><span class="d">f.</span> 4 月支付工资现金共 $3,900。</li>
+        <li><span class="d">g.</span> 收到加油站 $320 账单（4 月用油），5 月支付。</li>
+        <li><span class="d">h.</span> 偿还 XYZ 票据本金 $700 及利息 $40。</li>
+        <li><span class="d">i.</span> 支付应付账款 $100。</li>
+        <li><span class="d">j.</span> 收回市政府票据本金 $1,250 及利息 $12。</li>
+      </ul>
+      <div class="req"><div class="rt">要求 Required</div><ol>
+        <li>分析交易、编分录、过入 T 账户、计算余额。</li>
+        <li>编制截至 4 月 30 日的 <b>未调整分类损益表</b>。</li>
+        <li>现金账户每笔标 O / I / F。</li>
+      </ol></div>
+    </div>
+    <div class="btnrow"><button class="act solBtn" type="button">查看完整解答</button></div>
+    <div class="solution sol">
+      <span class="sol-tag">Suggested Solution</span>
+      <div class="keyans"><b>关键：</b>Cash 余 <b>$5,032</b>；除草收入 $5,200；未调整净利润 <b>$862</b>（税前同，税费此时为 0）。</div>
+      <h4>1 · 分录</h4>
+      <table class="jet"><tr><th>科目</th><th>借</th><th>贷</th></tr>
+        <tr><td>(a) Fuel expense 燃料费 (+E)</td><td>90</td><td></td></tr>
+        <tr><td class="cr">Cash (−A)</td><td></td><td>90</td></tr>
+        <tr class="je-sep"><td>(b) Cash (+A)</td><td>1,600</td><td></td></tr>
+        <tr><td class="cr">Unearned revenue 未赚取收入 (+L)</td><td></td><td>1,600</td></tr>
+        <tr class="je-sep"><td>(c) Prepaid expenses 预付费用 (+A)</td><td>300</td><td></td></tr>
+        <tr><td class="cr">Cash (−A)</td><td></td><td>300</td></tr>
+        <tr class="je-sep"><td>(d) Accounts receivable 应收账款 (+A)</td><td>5,200</td><td></td></tr>
+        <tr><td class="cr">Mowing revenue 除草收入 (+R)</td><td></td><td>5,200</td></tr>
+        <tr class="je-sep"><td>(e) Cash (+A)</td><td>3,500</td><td></td></tr>
+        <tr><td class="cr">Accounts receivable (−A)</td><td></td><td>3,500</td></tr>
+        <tr class="je-sep"><td>(f) Wages expense 工资费 (+E)</td><td>3,900</td><td></td></tr>
+        <tr><td class="cr">Cash (−A)</td><td></td><td>3,900</td></tr>
+        <tr class="je-sep"><td>(g) Fuel expense (+E)</td><td>320</td><td></td></tr>
+        <tr><td class="cr">Accounts payable 应付账款 (+L)</td><td></td><td>320</td></tr>
+        <tr class="je-sep"><td>(h) Interest expense 利息费 (+E)</td><td>40</td><td></td></tr>
+        <tr><td>　Long-term notes payable (−L)</td><td>700</td><td></td></tr>
+        <tr><td class="cr">Cash (−A)</td><td></td><td>740</td></tr>
+        <tr class="je-sep"><td>(i) Accounts payable (−L)</td><td>100</td><td></td></tr>
+        <tr><td class="cr">Cash (−A)</td><td></td><td>100</td></tr>
+        <tr class="je-sep"><td>(j) Cash (+A)</td><td>1,262</td><td></td></tr>
+        <tr><td class="cr">Notes receivable (−A)</td><td></td><td>1,250</td></tr>
+        <tr><td class="cr">Interest revenue 利息收入 (+R)</td><td></td><td>12</td></tr>
+      </table>
+      <div class="calc">主要余额：
+Cash = 3,800 +1,600 +3,500 +1,262 −90 −300 −3,900 −740 −100 = 5,032
+Accounts receivable = 0 +5,200 −3,500 = 1,700
+Notes receivable = 1,250 −1,250 = 0
+Fuel expense = 90 +320 = 410   LT notes payable = 4,000 −700 = 3,300</div>
+      <h4>2 · 未调整损益表</h4>
+      <div class="fs"><div class="fs-h"><b>TERRIFIC LAWN — Unadjusted Income Statement</b><span>For the Month Ended April 30, 2023</span></div>
+      <table class="fst">
+        <tr><td>Mowing revenue 除草收入</td><td>$5,200</td></tr>
+        <tr class="sec"><td>Operating expenses 营业费用</td><td></td></tr>
+        <tr class="i1"><td>Wages expense 工资费</td><td>3,900</td></tr>
+        <tr class="i1"><td>Fuel expense 燃料费</td><td>410</td></tr>
+        <tr class="tot i1"><td>Total operating expenses</td><td>4,310</td></tr>
+        <tr class="tot"><td>Income from operations 营业利润</td><td>890</td></tr>
+        <tr class="sec"><td>Other items 其他项目</td><td></td></tr>
+        <tr class="i1"><td>Interest revenue 利息收入</td><td>12</td></tr>
+        <tr class="i1"><td>Interest expense 利息费用</td><td>(40)</td></tr>
+        <tr class="tot"><td>Income before taxes 税前利润</td><td>862</td></tr>
+        <tr><td>Income tax expense（待第 4 章计提）</td><td>0</td></tr>
+        <tr class="grand"><td>Net income 净利润</td><td>$862</td></tr>
+      </table></div>
+      <h4>3 · 现金流量分类</h4>
+      <div class="calc">(a) −O 付供应商（油）      (b) +O 客户预付
+(c) −O 付供应商（保险）    (e) +O 客户回款
+(f) −O 付员工工资          (h) −O 利息$40 / −F 本金$700
+(i) −O 付供应商            (j) +O 利息$12 / +I 本金$1,250</div>
+    </div>
+  </div>
+</section>
+
+<!-- Ch4 Terrific Lawn -->
+<section id="p-c4" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅱ · Demonstration Case · Chapter 4</div><h2>调整 · 结账 · 财务报表 · 比率</h2></div>
+  <div class="card">
+    <div class="qnum">题目 · Terrific Lawn（会计循环收尾）</div>
+    <div class="case-q">
+      <p>4 月 30 日未调整试算平衡（来自 Ch3）。补充信息：</p>
+      <ul class="tx">
+        <li><span class="d">a.</span> 未赚取收入 $1,600 为 4–7 月共 4 个月服务。</li>
+        <li><span class="d">b.</span> 预付费用含保险 $300，覆盖 6 个月（4–9 月）。</li>
+        <li><span class="d">c.</span> 设备本月已用于经营，估计年折旧 $300。</li>
+        <li><span class="d">d.</span> 工资已付至 4 月 28 日；最后 2 天每天累计 $200，5 月支付。</li>
+        <li><span class="d">e.</span> 4 月新增电话线估计 $50，尚未入账，5 月收账单并支付。</li>
+        <li><span class="d">f.</span> 票据按年息 12% 计息，$3,700 本金整月在外。</li>
+        <li><span class="d">g.</span> 所得税率 25%（四舍五入到整数）。</li>
+      </ul>
+      <div class="req"><div class="rt">要求 Required</div><ol>
+        <li>编制 4 月 <b>调整分录</b>。</li>
+        <li>编制 <b>调整后试算平衡表</b>。</li>
+        <li>编制损益表（含 EPS，1,500 股）、股东权益表、资产负债表。</li>
+        <li>编制 <b>结账分录</b>。</li>
+        <li>计算比率（保留 3 位小数）：流动比率、净利率、总资产周转率。</li>
+      </ol></div>
+    </div>
+    <div class="btnrow"><button class="act solBtn" type="button">查看完整解答</button></div>
+    <div class="solution sol">
+      <span class="sol-tag">Suggested Solution</span>
+      <div class="keyans"><b>关键：</b>净利润 <b>$525</b>，EPS <b>$0.35</b>；调整后试算合计 $20,419；资产合计 $15,307。比率：流动 <b>2.813</b>、净利率 <b>0.094</b>、总资产周转 <b>0.732</b>。</div>
+      <h4>1 · 调整分录 AJE</h4>
+      <table class="jet"><tr><th>科目</th><th>借</th><th>贷</th></tr>
+        <tr><td>a. Unearned revenue (−L)　$1,600×1/4</td><td>400</td><td></td></tr>
+        <tr><td class="cr">Mowing revenue (+R)</td><td></td><td>400</td></tr>
+        <tr class="je-sep"><td>b. Insurance expense (+E)　$300×1/6</td><td>50</td><td></td></tr>
+        <tr><td class="cr">Prepaid expenses (−A)</td><td></td><td>50</td></tr>
+        <tr class="je-sep"><td>c. Depreciation expense (+E)　$300×1/12</td><td>25</td><td></td></tr>
+        <tr><td class="cr">Accumulated depreciation (+XA)</td><td></td><td>25</td></tr>
+        <tr class="je-sep"><td>d. Wages expense (+E)　$200×2 天</td><td>400</td><td></td></tr>
+        <tr><td class="cr">Wages payable (+L)</td><td></td><td>400</td></tr>
+        <tr class="je-sep"><td>e. Utilities expense (+E)</td><td>50</td><td></td></tr>
+        <tr><td class="cr">Utilities payable (+L)</td><td></td><td>50</td></tr>
+        <tr class="je-sep"><td>f. Interest expense (+E)　3,700×12%×1/12</td><td>37</td><td></td></tr>
+        <tr><td class="cr">Interest payable (+L)</td><td></td><td>37</td></tr>
+        <tr class="je-sep"><td>g. Income tax expense (+E)　700×25%</td><td>175</td><td></td></tr>
+        <tr><td class="cr">Income tax payable (+L)</td><td></td><td>175</td></tr>
+      </table>
+      <div class="calc">税前利润推导：
+调整后收入 = 5,212 + 400 = 5,612
+调整后费用 = 4,350 + 50 + 25 + 400 + 50 + 37 = 4,912
+税前利润 = 5,612 − 4,912 = 700 → 所得税 = 700×25% = 175</div>
+      <h4>3 · 损益表</h4>
+      <div class="fs"><div class="fs-h"><b>Income Statement</b><span>Month Ended April 30, 2023</span></div>
+      <table class="fst">
+        <tr class="sec"><td>Operating revenues</td><td></td></tr>
+        <tr class="i1"><td>Mowing revenue 除草收入</td><td>$5,600</td></tr>
+        <tr class="sec"><td>Operating expenses</td><td></td></tr>
+        <tr class="i1"><td>Wages expense</td><td>4,300</td></tr>
+        <tr class="i1"><td>Fuel expense</td><td>410</td></tr>
+        <tr class="i1"><td>Insurance expense</td><td>50</td></tr>
+        <tr class="i1"><td>Utilities expense</td><td>50</td></tr>
+        <tr class="i1"><td>Depreciation expense</td><td>25</td></tr>
+        <tr class="tot i1"><td>Total operating expenses</td><td>4,835</td></tr>
+        <tr class="tot"><td>Operating income 营业利润</td><td>765</td></tr>
+        <tr class="i1"><td>Interest revenue</td><td>12</td></tr>
+        <tr class="i1"><td>Interest expense</td><td>(77)</td></tr>
+        <tr class="tot"><td>Pretax income 税前利润</td><td>700</td></tr>
+        <tr><td>Income tax expense</td><td>175</td></tr>
+        <tr class="grand"><td>Net income 净利润</td><td>$525</td></tr>
+        <tr><td>EPS（$525 ÷ 1,500 股）</td><td>$0.35</td></tr>
+      </table></div>
+      <h4>3 · 资产负债表</h4>
+      <div class="fs"><div class="fs-h"><b>Balance Sheet</b><span>April 30, 2023</span></div>
+      <table class="fst">
+        <tr class="sec"><td>Assets · Current assets</td><td></td></tr>
+        <tr class="i1"><td>Cash</td><td>$5,032</td></tr>
+        <tr class="i1"><td>Accounts receivable</td><td>1,700</td></tr>
+        <tr class="i1"><td>Prepaid expenses</td><td>250</td></tr>
+        <tr class="tot i1"><td>Total current assets</td><td>6,982</td></tr>
+        <tr><td>Equipment（net of $25 accum. dep.）</td><td>4,575</td></tr>
+        <tr><td>Land</td><td>3,750</td></tr>
+        <tr class="grand"><td>Total assets</td><td>$15,307</td></tr>
+        <tr class="sec"><td>Current liabilities</td><td></td></tr>
+        <tr class="i1"><td>Accounts payable</td><td>$220</td></tr>
+        <tr class="i1"><td>Wages payable</td><td>400</td></tr>
+        <tr class="i1"><td>Utilities payable</td><td>50</td></tr>
+        <tr class="i1"><td>Short-term notes payable</td><td>400</td></tr>
+        <tr class="i1"><td>Interest payable</td><td>37</td></tr>
+        <tr class="i1"><td>Income taxes payable</td><td>175</td></tr>
+        <tr class="i1"><td>Unearned revenue</td><td>1,200</td></tr>
+        <tr class="tot i1"><td>Total current liabilities</td><td>2,482</td></tr>
+        <tr><td>Long-term notes payable</td><td>3,300</td></tr>
+        <tr class="tot"><td>Total liabilities</td><td>5,782</td></tr>
+        <tr class="sec"><td>Stockholders' equity</td><td></td></tr>
+        <tr class="i1"><td>Common stock</td><td>150</td></tr>
+        <tr class="i1"><td>Additional paid-in capital</td><td>8,850</td></tr>
+        <tr class="i1"><td>Retained earnings</td><td>525</td></tr>
+        <tr class="tot i1"><td>Total stockholders' equity</td><td>9,525</td></tr>
+        <tr class="grand"><td>Total liabilities &amp; equity</td><td>$15,307</td></tr>
+      </table></div>
+      <h4>4 · 结账分录 CE</h4>
+      <table class="jet"><tr><th>科目</th><th>借</th><th>贷</th></tr>
+        <tr><td>Mowing revenue (−R)</td><td>5,600</td><td></td></tr>
+        <tr><td>Interest revenue (−R)</td><td>12</td><td></td></tr>
+        <tr><td class="cr">Wages expense (−E)</td><td></td><td>4,300</td></tr>
+        <tr><td class="cr">Fuel expense (−E)</td><td></td><td>410</td></tr>
+        <tr><td class="cr">Insurance expense (−E)</td><td></td><td>50</td></tr>
+        <tr><td class="cr">Utilities expense (−E)</td><td></td><td>50</td></tr>
+        <tr><td class="cr">Depreciation expense (−E)</td><td></td><td>25</td></tr>
+        <tr><td class="cr">Interest expense (−E)</td><td></td><td>77</td></tr>
+        <tr><td class="cr">Income tax expense (−E)</td><td></td><td>175</td></tr>
+        <tr><td class="cr">Retained earnings (+SE)</td><td></td><td>525</td></tr>
+      </table>
+      <h4>5 · 比率</h4>
+      <div class="calc">a. 流动比率 = 6,982 / 2,482 = 2.813
+b. 净利率 = 525 / 5,600 = 0.094（9.4%）
+c. 总资产周转 = 5,600 / [(0 + 15,307)/2 = 7,653.50] = 0.732</div>
+    </div>
+  </div>
+</section>
+
+<!-- Ch5 微软 -->
+<section id="p-c5" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅱ · Demonstration Case · Chapter 5</div><h2>多步式损益表 · ROA 分析 · 微软</h2></div>
+  <div class="card">
+    <div class="qnum">题目 · Microsoft Corporation</div>
+    <div class="case-q">
+      <p>下列项目改编自微软截至 <b>2020 年 6 月 30 日</b> 财年的报表（百万美元，正常借贷余额）；加权平均股数 7,568 百万股。</p>
+      <div class="given"><div class="gh">项目列表（百万美元）</div><table class="gt"><tbody>
+        <tr><td>Accounts payable</td><td>12,530</td></tr>
+        <tr><td>Accounts receivable (net)</td><td>32,011</td></tr>
+        <tr><td>Accrued compensation</td><td>7,874</td></tr>
+        <tr><td>Cash and short-term investments</td><td>136,527</td></tr>
+        <tr><td>Common stock and paid-in capital</td><td>80,552</td></tr>
+        <tr><td>Cost of goods sold</td><td>46,078</td></tr>
+        <tr><td>General and administrative</td><td>5,111</td></tr>
+        <tr><td>Income taxes payable</td><td>2,130</td></tr>
+        <tr><td>Long-term liabilities</td><td>110,697</td></tr>
+        <tr><td>Net revenue</td><td>143,015</td></tr>
+        <tr><td>Other current assets</td><td>13,377</td></tr>
+        <tr><td>Other current liabilities</td><td>13,776</td></tr>
+        <tr><td>Other income (expense), net</td><td>77</td></tr>
+        <tr><td>Other investments</td><td>2,965</td></tr>
+        <tr><td>Other noncurrent assets</td><td>72,280</td></tr>
+        <tr><td>Property, plant &amp; equipment (net)</td><td>44,151</td></tr>
+        <tr><td>Provision for income taxes</td><td>8,755</td></tr>
+        <tr><td>Research and development</td><td>19,269</td></tr>
+        <tr><td>Retained earnings</td><td>37,752</td></tr>
+        <tr><td>Sales and marketing</td><td>19,598</td></tr>
+        <tr><td>Unearned revenue</td><td>36,000</td></tr>
+      </tbody></table></div>
+      <div class="req"><div class="rt">要求 Required</div><ol>
+        <li>编制分类（多步式）损益表（含毛利、营业利润、税前、净利、EPS）与分类资产负债表。</li>
+        <li>计算 ROA，并用 <b>利润驱动分解</b> 解释（年初总资产 $286,556 百万）。</li>
+        <li>若额外发生 $1,500 现金 G&amp;A 费用，对 ROA 的影响（增 / 减 / 无）？</li>
+      </ol></div>
+    </div>
+    <div class="btnrow"><button class="act solBtn" type="button">查看完整解答</button></div>
+    <div class="solution sol">
+      <span class="sol-tag">Suggested Solution</span>
+      <div class="keyans"><b>关键：</b>毛利 $96,937；营业利润 $52,959；净利 <b>$44,281</b>；EPS <b>$5.85</b>；总资产 $301,311；<b>ROA ≈ 15%</b> = 0.31 × 0.49。</div>
+      <h4>1 · 多步式损益表</h4>
+      <div class="fs"><div class="fs-h"><b>MICROSOFT — Income Statement</b><span>Year Ended June 30, 2020（百万美元）</span></div>
+      <table class="fst">
+        <tr><td>Net revenue 净收入</td><td>$143,015</td></tr>
+        <tr><td>Cost of goods sold 销售成本</td><td>46,078</td></tr>
+        <tr class="tot"><td>Gross profit 毛利润</td><td>96,937</td></tr>
+        <tr class="i1"><td>Research and development</td><td>19,269</td></tr>
+        <tr class="i1"><td>Sales and marketing</td><td>19,598</td></tr>
+        <tr class="i1"><td>General and administrative</td><td>5,111</td></tr>
+        <tr class="tot"><td>Operating income 营业利润</td><td>52,959</td></tr>
+        <tr class="i1"><td>Other income (expense), net</td><td>77</td></tr>
+        <tr class="tot"><td>Income before income taxes 税前利润</td><td>53,036</td></tr>
+        <tr><td>Provision for income taxes</td><td>8,755</td></tr>
+        <tr class="grand"><td>Net income 净利润</td><td>$44,281</td></tr>
+        <tr><td>Earnings per share（÷7,568 股）</td><td>$5.85</td></tr>
+      </table></div>
+      <h4>1 · 分类资产负债表</h4>
+      <div class="fs"><div class="fs-h"><b>MICROSOFT — Balance Sheet</b><span>June 30, 2020（百万美元）</span></div>
+      <table class="fst">
+        <tr class="sec"><td>Current assets</td><td></td></tr>
+        <tr class="i1"><td>Cash and short-term investments</td><td>$136,527</td></tr>
+        <tr class="i1"><td>Accounts receivable (net)</td><td>32,011</td></tr>
+        <tr class="i1"><td>Other current assets</td><td>13,377</td></tr>
+        <tr class="tot i1"><td>Total current assets</td><td>181,915</td></tr>
+        <tr class="sec"><td>Noncurrent assets</td><td></td></tr>
+        <tr class="i1"><td>Property and equipment, net</td><td>44,151</td></tr>
+        <tr class="i1"><td>Other investments</td><td>2,965</td></tr>
+        <tr class="i1"><td>Other noncurrent assets</td><td>72,280</td></tr>
+        <tr class="grand"><td>Total assets</td><td>$301,311</td></tr>
+        <tr class="sec"><td>Current liabilities</td><td></td></tr>
+        <tr class="i1"><td>Accounts payable</td><td>$12,530</td></tr>
+        <tr class="i1"><td>Accrued compensation</td><td>7,874</td></tr>
+        <tr class="i1"><td>Income taxes payable</td><td>2,130</td></tr>
+        <tr class="i1"><td>Unearned revenue</td><td>36,000</td></tr>
+        <tr class="i1"><td>Other current liabilities</td><td>13,776</td></tr>
+        <tr class="tot i1"><td>Total current liabilities</td><td>72,310</td></tr>
+        <tr><td>Long-term liabilities</td><td>110,697</td></tr>
+        <tr class="tot"><td>Total liabilities</td><td>183,007</td></tr>
+        <tr class="sec"><td>Stockholders' equity</td><td></td></tr>
+        <tr class="i1"><td>Common stock and paid-in capital</td><td>80,552</td></tr>
+        <tr class="i1"><td>Retained earnings</td><td>37,752</td></tr>
+        <tr class="tot i1"><td>Total stockholders' equity</td><td>118,304</td></tr>
+        <tr class="grand"><td>Total liabilities &amp; equity</td><td>$301,311</td></tr>
+      </table></div>
+      <h4>2 · ROA 与利润驱动分解</h4>
+      <div class="calc">平均总资产 = (286,556 + 301,311) / 2 = 293,933.5
+ROA = 44,281 / 293,933.5 ≈ 0.15（15%）
+
+净利率  Net Income/Net Sales        = 44,281 / 143,015 = 0.31
+×周转率 Net Sales/Avg Total Assets  = 143,015 / 293,933.5 = 0.49
+= ROA = 0.31 × 0.49 = 0.15</div>
+      <p>微软净利率高（每 $1 销售赚 $0.31），资产效率每 $1 资产产生 $0.49 销售；其软件业的主导地位使其能收取溢价。</p>
+      <h4>3 · 额外 $1,500 G&amp;A（现金）的影响</h4>
+      <p>分录：借 G&amp;A 费用 1,500 / 贷 现金 1,500。分子净利润减少 $1,500，分母平均总资产减少 $750（期末现金减 $1,500 → 平均减半）。<b>ROA 下降。</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- Ch6A 坏账 -->
+<section id="p-c6a" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅱ · Demonstration Case · Chapter 6 A</div><h2>净销售额 · 坏账估计</h2></div>
+  <div class="card">
+    <div class="qnum">题目 · Wholesale Warehouse Stores</div>
+    <div class="case-q">
+      <p>2022 年销售商品 <span class="num">$950,000</span>。其中 $400,000 为赊销，条款 2/10, n/30（75% 在折扣期内付清）；$500,000 用信用卡支付（3% 信用卡折扣）；其余现金。12 月 31 日应收账款余额 $80,000。坏账准备年初余额 $9,000，年内冲销坏账 $6,000。</p>
+      <div class="req"><div class="rt">要求 Required</div><ol>
+        <li>将销售折扣与信用卡折扣作为 <b>反向收入</b>，计算 2022 年净销售额。</li>
+        <li>用 <b>销售百分比法</b>（估计赊销的 2% 产生坏账），记录坏账费用。</li>
+        <li>改用 <b>应收账款老化法</b>（估计 $10,000 无法收回），记录坏账费用。</li>
+      </ol></div>
+    </div>
+    <div class="btnrow"><button class="act solBtn" type="button">查看完整解答</button></div>
+    <div class="solution sol">
+      <span class="sol-tag">Suggested Solution</span>
+      <div class="keyans"><b>关键：</b>净销售额 <b>$929,000</b>；销售百分比法坏账 <b>$8,000</b>；老化法坏账 <b>$7,000</b>。</div>
+      <h4>1 · 净销售额</h4>
+      <div class="fs"><table class="fst">
+        <tr><td>Sales revenue 销售收入</td><td>$950,000</td></tr>
+        <tr class="i1"><td>Less: Sales discounts（0.02×0.75×400,000）</td><td>6,000</td></tr>
+        <tr class="i1"><td>Credit card discounts（0.03×500,000）</td><td>15,000</td></tr>
+        <tr class="grand"><td>Net sales 净销售额</td><td>$929,000</td></tr>
+      </table></div>
+      <h4>2 · 销售百分比法</h4>
+      <p>坏账率应作用于 <b>赊销额</b>（现金销售不产生坏账）：0.02 × $400,000 = <b>$8,000</b>。</p>
+      <table class="jet"><tr><th>科目</th><th>借</th><th>贷</th></tr>
+        <tr><td>Bad debt expense 坏账费用 (+E, −SE)</td><td>8,000</td><td></td></tr>
+        <tr><td class="cr">Allowance for doubtful accounts (+XA, −A)</td><td></td><td>8,000</td></tr>
+      </table>
+      <h4>3 · 应收账款老化法</h4>
+      <p>分录金额 = 估计期末余额 − 当前余额：</p>
+      <div class="calc">估计坏账准备期末余额          $10,000
+减：当前坏账准备余额（9,000 − 6,000）  3,000
+本年坏账费用                  $ 7,000</div>
+      <table class="jet"><tr><th>科目</th><th>借</th><th>贷</th></tr>
+        <tr><td>Bad debt expense (+E, −SE)</td><td>7,000</td><td></td></tr>
+        <tr><td class="cr">Allowance for doubtful accounts (+XA, −A)</td><td></td><td>7,000</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Ch6B 银行调节 -->
+<section id="p-c6b" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅱ · Demonstration Case · Chapter 6 B</div><h2>银行存款余额调节表</h2></div>
+  <div class="card">
+    <div class="qnum">题目 · Laura Anne Long</div>
+    <div class="case-q">
+      <p>Laura 收到第一份银行对账单，信息如下：</p>
+      <div class="given"><div class="gh">资料</div><table class="gt"><tbody>
+        <tr><td>Bank balance, September 1 银行 9/1 余额</td><td>$1,150</td></tr>
+        <tr><td>Deposits during September 9 月存入</td><td>650</td></tr>
+        <tr><td>Checks cleared during September 9 月兑现支票</td><td>900</td></tr>
+        <tr><td>Bank service charge 银行手续费</td><td>25</td></tr>
+        <tr><td>Bank balance, October 1 银行 10/1 余额</td><td>875</td></tr>
+      </tbody></table></div>
+      <p>9 月 29 日存入的 $50 尚未入账；$200 房租支票尚未兑现。她 10 月 1 日的账簿余额为 $750。</p>
+      <div class="req"><div class="rt">要求 Required</div><ol>
+        <li>编制银行存款余额调节表。</li>
+        <li>为什么个人和企业每月都应做银行调节？</li>
+      </ol></div>
+    </div>
+    <div class="btnrow"><button class="act solBtn" type="button">查看完整解答</button></div>
+    <div class="solution sol">
+      <span class="sol-tag">Suggested Solution</span>
+      <div class="keyans"><b>关键：</b>双方调节后正确余额均为 <b>$725</b>。</div>
+      <h4>1 · 调节表</h4>
+      <div class="fs"><div class="fs-h"><b>Bank Reconciliation</b><span>October 1</span></div>
+      <table class="fst">
+        <tr class="sec"><td>Laura's Books 账簿一方</td><td></td></tr>
+        <tr><td>October 1 cash balance 账簿余额</td><td>$750</td></tr>
+        <tr class="i1"><td>Additions 加项：None</td><td>—</td></tr>
+        <tr class="i1"><td>Deductions 减项：Bank service charge</td><td>(25)</td></tr>
+        <tr class="grand"><td>Correct cash balance 正确余额</td><td>$725</td></tr>
+        <tr class="sec"><td>Bank Statement 银行一方</td><td></td></tr>
+        <tr><td>October 1 cash balance 银行余额</td><td>$875</td></tr>
+        <tr class="i1"><td>Additions 加项：Deposit in transit 在途存款</td><td>50</td></tr>
+        <tr class="i1"><td>Deductions 减项：Outstanding check 未兑现支票</td><td>(200)</td></tr>
+        <tr class="grand"><td>Correct cash balance 正确余额</td><td>$725</td></tr>
+      </table></div>
+      <h4>2 · 为什么每月调节</h4>
+      <p>每月调节能确保账簿反映正确余额、及时发现错误、避免开出空头支票。企业还有额外原因：<b>调节得出的正确余额需列报于资产负债表</b>。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Ch7 FIFO/LIFO -->
+<section id="p-c7" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅱ · Demonstration Case · Chapter 7</div><h2>FIFO / LIFO · 存货周转</h2></div>
+  <div class="card">
+    <div class="qnum">题目 · Balent Appliances（微波炉）</div>
+    <div class="case-q">
+      <p>截至 2022 年 12 月 31 日，按顺序发生（均为现金）：</p>
+      <div class="given"><div class="gh">资料</div><table class="gt"><tbody>
+        <tr><td>a. 期初存货 Beginning inventory（11 件）</td><td>$200/件</td></tr>
+        <tr><td>b. 新采购 New purchases（9 件）</td><td>$220/件</td></tr>
+        <tr><td>c. 销售 Sales（8 件，售价 $420）</td><td>?</td></tr>
+      </tbody></table></div>
+      <div class="req"><div class="rt">要求 Required</div><ol>
+        <li>分别用 FIFO、LIFO 计算期末存货（件 / 金额）与销售成本（件 / 金额）。</li>
+        <li>若成本预计延续当前趋势，建议用哪种方法？解释。</li>
+        <li>其他营业费用 $500、税率 25%，用所选方法编制损益表。</li>
+        <li>用所选方法计算存货周转率，并说明含义。</li>
+      </ol></div>
+    </div>
+    <div class="btnrow"><button class="act solBtn" type="button">查看完整解答</button></div>
+    <div class="solution sol">
+      <span class="sol-tag">Suggested Solution</span>
+      <div class="keyans"><b>关键：</b>可供销售 $4,180（20 件）；FIFO 期末 $2,580 / COGS $1,600；LIFO 期末 $2,420 / COGS $1,760。涨价应选 <b>LIFO</b>；LIFO 下净利 <b>$825</b>，存货周转 <b>0.76</b>。</div>
+      <h4>1 · FIFO / LIFO</h4>
+      <div class="calc">可供销售 = 11×200 + 9×220 = 2,200 + 1,980 = 4,180（20 件）；售 8 件，余 12 件
+FIFO 期末（最近成本）= 9×220 + 3×200 = 2,580 → COGS = 8×200 = 1,600
+LIFO 期末（最早成本）= 11×200 + 1×220 = 2,420 → COGS = 8×220 = 1,760</div>
+      <div class="fs"><table class="fst">
+        <tr class="sec"><td></td><td>期末存货 / 销售成本</td></tr>
+        <tr><td>FIFO（12 件 / 8 件）</td><td>$2,580 / $1,600</td></tr>
+        <tr><td>LIFO（12 件 / 8 件）</td><td>$2,420 / $1,760</td></tr>
+      </table></div>
+      <h4>2 · 方法选择</h4>
+      <p>应选 <b>LIFO</b>。成本上升时，LIFO 产生更高 COGS、更低税前利润、更少所得税；依 LIFO 一致性规则，税表与损益表须同时采用。</p>
+      <h4>3 · 损益表（LIFO）</h4>
+      <div class="fs"><div class="fs-h"><b>BALENT APPLIANCES — Income Statement</b><span>Year Ended December 31, 2022</span></div>
+      <table class="fst">
+        <tr><td>Sales（8×$420）</td><td>$3,360</td></tr>
+        <tr><td>Cost of goods sold</td><td>1,760</td></tr>
+        <tr class="tot"><td>Gross profit 毛利</td><td>1,600</td></tr>
+        <tr><td>Other expenses</td><td>500</td></tr>
+        <tr class="tot"><td>Income before income taxes</td><td>1,100</td></tr>
+        <tr><td>Income tax expense（25%）</td><td>275</td></tr>
+        <tr class="grand"><td>Net income</td><td>$825</td></tr>
+      </table></div>
+      <h4>4 · 存货周转率</h4>
+      <div class="calc">存货周转 = COGS / 平均存货 = 1,760 / [(2,200 + 2,420)/2 = 2,310] = 0.76</div>
+      <p>它反映期内平均存货被采购并售出的次数。Balent 全年平均存货周转不足 1 次。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Ch8A 长期资产 -->
+<section id="p-c8a" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅱ · Demonstration Case · Chapter 8 A</div><h2>长期资产 · 折旧 · 减值</h2></div>
+  <div class="card">
+    <div class="qnum">题目 · Diversified Industries</div>
+    <div class="case-q">
+      <p>2023 年交易（金额已简化）：</p>
+      <ul class="tx">
+        <li><span class="d">1/1</span> 以 $775,000 购入一栋 10 年楼龄建筑及其所在土地 $130,000；付现 $180,000，余额签抵押应付票据。</li>
+        <li><span class="d">1/12</span> 投入使用前付建筑翻新费 $38,000。</li>
+        <li><span class="d">7/10</span> 付建筑日常维修费 $4,200。</li>
+        <li><span class="d">12/31 a.</span> 建筑直线法折旧，年限 30 年，残值 $33,000。</li>
+        <li><span class="d">12/31 b.</span> 收购溢价产生商誉 $100,000，无限寿命。</li>
+        <li><span class="d">12/31 c.</span> 年初设备成本 $650,000、累计折旧 $150,000；双倍余额递减法，20 年，无残值。</li>
+        <li><span class="d">12/31 d.</span> 旧挖掘设备成本 $156,000、账面 $120,000；未来现金流 $40,000、公允价值 $35,000，已减值。</li>
+      </ul>
+      <div class="req"><div class="rt">要求 Required</div><ol>
+        <li>指出各事项对「资产 = 负债 + 股东权益」的账户、金额和方向。</li>
+        <li>仅编制调整分录 (a) 与 (c)。</li>
+        <li>列报固定资产（土地 / 建筑 / 设备）及无形资产（商誉）的分类与金额。</li>
+        <li>营业收入 $1,000,000、年初固定资产净额 $500,000，计算固定资产周转率并解释。</li>
+      </ol></div>
+    </div>
+    <div class="btnrow"><button class="act solBtn" type="button">查看完整解答</button></div>
+    <div class="solution sol">
+      <span class="sol-tag">Suggested Solution</span>
+      <div class="keyans"><b>关键：</b>建筑成本 $813,000，年折旧 <b>$26,000</b>；设备 DDB 折旧 <b>$50,000</b>；减值损失 <b>$85,000</b>；固定资产合计 $1,282,000；固定资产周转 <b>1.12</b>。</div>
+      <h4>1 · 事项分析与计算</h4>
+      <div class="calc">1/1：Cash −180,000，Land +130,000，Building +775,000 | Note payable +725,000
+1/12：Cash −38,000，Building +38,000（资本化：使资产达可用状态的必要支出）
+7/10：Cash −4,200 | Repairs expense (+E) → SE −4,200（日常维修，费用化）
+12/31 a：Accum. dep. (+XA) −26,000 | Depreciation expense (+E) → SE −26,000
+12/31 b：无分录（商誉无限寿命，不摊销，留待减值测试）
+12/31 c：Accum. dep. (+XA) −50,000 | Depreciation expense (+E) → SE −50,000
+12/31 d：Equipment −85,000 | Loss on impairment (+E) → SE −85,000
+
+建筑成本 = 775,000 + 38,000 = 813,000
+直线折旧 = (813,000 − 33,000) × 1/30 = 26,000
+双倍余额递减 = (650,000 − 150,000) × 2/20 = 50,000
+减值测试：账面 120,000 > 未来现金流 40,000 → 减值
+减值损失 = 账面 120,000 − 公允 35,000 = 85,000</div>
+      <h4>2 · 调整分录（a、c）</h4>
+      <table class="jet"><tr><th>科目</th><th>借</th><th>贷</th></tr>
+        <tr><td>a. Depreciation expense (+E, −SE)</td><td>26,000</td><td></td></tr>
+        <tr><td class="cr">Accumulated depreciation (+XA, −A)</td><td></td><td>26,000</td></tr>
+        <tr class="je-sep"><td>c. Depreciation expense (+E, −SE)</td><td>50,000</td><td></td></tr>
+        <tr><td class="cr">Accumulated depreciation (+XA, −A)</td><td></td><td>50,000</td></tr>
+      </table>
+      <h4>3 · 资产负债表列报（部分）</h4>
+      <div class="fs"><div class="fs-h"><b>Partial Balance Sheet</b><span>December 31, 2023</span></div>
+      <table class="fst">
+        <tr class="sec"><td>Fixed assets 固定资产</td><td></td></tr>
+        <tr class="i1"><td>Land 土地</td><td>$130,000</td></tr>
+        <tr class="i1"><td>Building 建筑</td><td>813,000</td></tr>
+        <tr class="i2"><td>Less: Accumulated depreciation</td><td>(26,000)</td></tr>
+        <tr class="i1 lbl2"><td>建筑净额</td><td>787,000</td></tr>
+        <tr class="i1"><td>Equipment（650,000 − 85,000）</td><td>565,000</td></tr>
+        <tr class="i2"><td>Less: Accumulated depreciation（150,000 + 50,000）</td><td>(200,000)</td></tr>
+        <tr class="i1 lbl2"><td>设备净额</td><td>365,000</td></tr>
+        <tr class="tot"><td>Total fixed assets 固定资产合计</td><td>1,282,000</td></tr>
+        <tr class="sec"><td>Intangible asset 无形资产</td><td></td></tr>
+        <tr class="i1"><td>Goodwill 商誉</td><td>100,000</td></tr>
+      </table></div>
+      <h4>4 · 固定资产周转率</h4>
+      <div class="calc">固定资产周转 = 营业收入 / 平均固定资产净额
+= 1,000,000 / [(500,000 + 1,282,000)/2 = 891,000] = 1.12</div>
+      <p>该公司资本密集；2023 年每 $1 固定资产净额产生 $1.12 营业收入。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Ch8B 砾石矿 -->
+<section id="p-c8b" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅱ · Demonstration Case · Chapter 8 B</div><h2>自然资源 · 折耗分录</h2></div>
+  <div class="card">
+    <div class="qnum">题目 · Gravel Pit #1</div>
+    <div class="case-q">
+      <p>2024 年 Diversified 收购砾石矿支持建筑业务（会计年度 12/31 结束）：</p>
+      <ul class="tx">
+        <li><span class="d">6/19</span> 以 $50,000 现金购入砾石矿 #1，估计可开采 100,000 立方码。</li>
+        <li><span class="d">8/1</span> 支付 $10,000 开采准备成本。</li>
+        <li><span class="d">11/10</span> 开采 12,000 立方码（拟 2025 年使用或销售）。</li>
+      </ul>
+      <div class="req"><div class="rt">要求 Required</div><ol><li>记录 6/19、8/1、11/10 三笔交易。</li></ol></div>
+    </div>
+    <div class="btnrow"><button class="act solBtn" type="button">查看完整解答</button></div>
+    <div class="solution sol">
+      <span class="sol-tag">Suggested Solution</span>
+      <div class="keyans"><b>关键：</b>矿总成本 $60,000，折耗率 $0.60/码，11/10 折耗 <b>$7,200</b> 资本化计入存货。</div>
+      <table class="jet"><tr><th>科目</th><th>借</th><th>贷</th></tr>
+        <tr><td>6/19　Gravel pit #1 (+A)</td><td>50,000</td><td></td></tr>
+        <tr><td class="cr">Cash (−A)</td><td></td><td>50,000</td></tr>
+        <tr class="je-sep"><td>8/1　Gravel pit #1 (+A)</td><td>10,000</td><td></td></tr>
+        <tr><td class="cr">Cash (−A)</td><td></td><td>10,000</td></tr>
+        <tr class="je-sep"><td>11/10　Gravel inventory (+A)</td><td>7,200</td><td></td></tr>
+        <tr><td class="cr">Gravel pit #1 (−A)</td><td></td><td>7,200</td></tr>
+      </table>
+      <h4>产量法折耗</h4>
+      <div class="calc">矿总成本 = 50,000 + 10,000 = 60,000
+折耗率   = 60,000 / 100,000 = $0.60 / 立方码
+折耗额   = 0.60 × 12,000 = $7,200（资本化计入砾石存货）</div>
+    </div>
+  </div>
+</section>
+
+<!-- Ch12 现金流量表 -->
+<section id="p-c12" class="panel">
+  <div class="panel-hd"><div class="kicker">Part Ⅱ · Demonstration Case · Chapter 12</div><h2>现金流量表 · 间接法</h2></div>
+  <div class="card">
+    <div class="qnum">题目 · National Beverage Corp.</div>
+    <div class="case-q">
+      <p>某年（截至 4/30）净利润 <span class="num">$24,742</span>（千美元）。活动：</p>
+      <ul class="tx">
+        <li><span class="d">a.</span> 现金购置设备 $6,658。</li>
+        <li><span class="d">b.</span> 现金处置设备 $167（账面净值即 $167）。</li>
+        <li><span class="d">c.</span> 购置短期投资 $109,450。</li>
+        <li><span class="d">d.</span> 出售短期投资得现金 $112,450（账面净值即此）。</li>
+        <li><span class="d">e.</span> 发行股票得现金 $950。</li>
+        <li><span class="d">f.</span> 现金回购库存股 $305。</li>
+        <li><span class="d">g.</span> 当年设备折旧 $8,891。</li>
+      </ul>
+      <div class="given"><div class="gh">比较资产负债表（千美元）· 本年 / 上年</div><table class="gt"><tbody>
+        <tr><td>Cash 现金</td><td>84,140 / 51,497</td></tr>
+        <tr><td>Short-term investments 短期投资</td><td>— / 3,000</td></tr>
+        <tr><td>Accounts receivable 应收账款</td><td>53,735 / 49,186</td></tr>
+        <tr><td>Inventories 存货</td><td>39,612 / 38,754</td></tr>
+        <tr><td>Prepaid expenses 预付费用</td><td>5,552 / 12,009</td></tr>
+        <tr><td>Accounts payable 应付账款</td><td>48,005 / 49,803</td></tr>
+        <tr><td>Accrued expenses 应计费用</td><td>44,403 / 41,799</td></tr>
+      </tbody></table></div>
+      <div class="req"><div class="rt">要求 Required</div><ol><li>用 <b>间接法</b> 编制现金流量表，并评估现金流量。</li></ol></div>
+    </div>
+    <div class="btnrow"><button class="act solBtn" type="button">查看完整解答</button></div>
+    <div class="solution sol">
+      <span class="sol-tag">Suggested Solution</span>
+      <div class="keyans"><b>关键：</b>经营 <b>$35,489</b>、投资 <b>(3,491)</b>、筹资 <b>645</b>；现金净增 $32,643 → 期末 $84,140。</div>
+      <div class="fs"><div class="fs-h"><b>NATIONAL BEVERAGE — Statement of Cash Flows</b><span>Year Ended April 30（千美元，间接法）</span></div>
+      <table class="fst">
+        <tr class="sec"><td>经营活动 Operating</td><td></td></tr>
+        <tr class="i1"><td>Net income 净利润</td><td>$24,742</td></tr>
+        <tr class="i1"><td>Depreciation &amp; amortization 折旧摊销</td><td>8,891</td></tr>
+        <tr class="i1"><td>Accounts receivable 应收账款（增）</td><td>(4,549)</td></tr>
+        <tr class="i1"><td>Inventory 存货（增）</td><td>(858)</td></tr>
+        <tr class="i1"><td>Prepaid expenses 预付费用（减）</td><td>6,457</td></tr>
+        <tr class="i1"><td>Accounts payable 应付账款（减）</td><td>(1,798)</td></tr>
+        <tr class="i1"><td>Accrued expenses 应计费用（增）</td><td>2,604</td></tr>
+        <tr class="tot"><td>经营活动净现金</td><td>35,489</td></tr>
+        <tr class="sec"><td>投资活动 Investing</td><td></td></tr>
+        <tr class="i1"><td>Purchases of PP&amp;E 购置设备</td><td>(6,658)</td></tr>
+        <tr class="i1"><td>Proceeds from disposal 处置设备</td><td>167</td></tr>
+        <tr class="i1"><td>Purchase of ST investments 购短期投资</td><td>(109,450)</td></tr>
+        <tr class="i1"><td>Proceeds from sale 出售短期投资</td><td>112,450</td></tr>
+        <tr class="tot"><td>投资活动净现金</td><td>(3,491)</td></tr>
+        <tr class="sec"><td>筹资活动 Financing</td><td></td></tr>
+        <tr class="i1"><td>Purchase of treasury stock 回购库存股</td><td>(305)</td></tr>
+        <tr class="i1"><td>Proceeds from issuance of stock 发行股票</td><td>950</td></tr>
+        <tr class="tot"><td>筹资活动净现金</td><td>645</td></tr>
+        <tr class="tot"><td>现金净增加</td><td>32,643</td></tr>
+        <tr><td>期初现金</td><td>51,497</td></tr>
+        <tr class="grand"><td>期末现金</td><td>$84,140</td></tr>
+      </table></div>
+      <p class="note" style="color:var(--ink-soft)">应收账款、存货增加为现金流出（减项）；预付费用减少、应付减少、应计增加按方向调整。</p>
+      <h4>评估</h4>
+      <p>公司利润为正，经营现金流更高，差异主要来自预付费用减少与折旧。表明其对流动资产 / 负债管理审慎，现金足以覆盖设备购置而无需额外借款，可用于未来扩张或派息。</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="reset"><button class="act ghost" id="resetBtn">重置计算题作答</button></div>
+  Libby《财务会计》自测 · Part Ⅰ 计算 + Part Ⅱ 演示案例 Ch1–12 · 单文件，可直接放进 GitHub Pages
+</footer>
+</div>
+
+<script>
+/* 计算自测数据 */
+const MC=[
+ {q:'某公司本年销售收入 <span class="num">¥640,000</span>，销售成本 <span class="num">¥400,000</span>。其毛利润为？',opts:['¥240,000','¥1,040,000','¥400,000','¥160,000'],correct:0,ex:'毛利润 = 销售收入 − 销售成本。',f:'640,000 − 400,000 = 240,000'},
+ {q:'毛利润 <span class="num">¥240,000</span>，运营费用 <span class="num">¥150,000</span>。运营净收入为？',opts:['¥90,000','¥390,000','¥240,000','¥150,000'],correct:0,ex:'运营净收入 = 毛利润 − 运营费用。',f:'240,000 − 150,000 = 90,000'},
+ {q:'运营净收入 <span class="num">¥90,000</span>，利息费用 <span class="num">¥10,000</span>，所得税率 <span class="num">25%</span>。净利润为？',opts:['¥60,000','¥67,500','¥80,000','¥52,500'],correct:0,ex:'先减利息得税前利润，再扣所得税。',f:'EBT=90,000−10,000=80,000；税=20,000；净利=60,000'},
+ {q:'期末流动资产 <span class="num">¥360,000</span>，流动负债 <span class="num">¥150,000</span>。流动比率约为？',opts:['2.4','0.42','1.4','4.2'],correct:0,ex:'流动比率 = 流动资产 / 流动负债。',f:'360,000 / 150,000 = 2.4'},
+ {q:'净销售额 <span class="num">¥800,000</span>，销售成本 <span class="num">¥520,000</span>。毛利率约为？',opts:['35%','65%','53.8%','28%'],correct:0,ex:'毛利率 = (净销售额 − 销售成本) / 净销售额。',f:'(800,000−520,000)/800,000 = 35%'},
+ {q:'净利润 <span class="num">¥90,000</span>；年初资产 <span class="num">¥550,000</span>，年末 <span class="num">¥650,000</span>。ROA 约为？',opts:['15%','13.8%','16.4%','7.5%'],correct:0,ex:'ROA = 净利润 / 平均资产；平均 = (期初+期末)/2。',f:'平均=600,000；90,000/600,000=15%'},
+ {q:'净销售额 <span class="num">¥960,000</span>，应收账款净额期初 <span class="num">¥100,000</span>、期末 <span class="num">¥140,000</span>。应收账款周转率约为？',opts:['8 次','6.86 次','9.6 次','0.125 次'],correct:0,ex:'应收账款周转率 = 净销售额 / 平均应收账款。',f:'平均=120,000；960,000/120,000=8'},
+ {q:'销售成本 <span class="num">¥600,000</span>，存货期初 <span class="num">¥120,000</span>、期末 <span class="num">¥180,000</span>。存货周转率约为？',opts:['4 次','3.33 次','5 次','0.25 次'],correct:0,ex:'存货周转率分子用销售成本，分母为平均存货。',f:'平均=150,000；600,000/150,000=4'},
+ {q:'营业收入 <span class="num">¥1,200,000</span>，固定资产净额期初 <span class="num">¥450,000</span>、期末 <span class="num">¥550,000</span>。固定资产周转率约为？',opts:['2.4 次','2.18 次','2.67 次','0.42 次'],correct:0,ex:'固定资产周转率 = 营业收入 / 平均固定资产净额。',f:'平均=500,000；1,200,000/500,000=2.4'},
+ {q:'经营活动现金流量 <span class="num">¥150,000</span>，净利润 <span class="num">¥120,000</span>。收入质量比率为？',opts:['1.25','0.8','1.5','1.2'],correct:0,ex:'收入质量比率 = 经营现金流 / 净利润；>1 盈利质量较好。',f:'150,000 / 120,000 = 1.25'},
+ {q:'经营活动现金流量 <span class="num">¥200,000</span>，购置 PP&E 付现 <span class="num">¥125,000</span>。资本收购比率为？',opts:['1.6','0.625','1.5','2.5'],correct:0,ex:'资本收购比率 = 经营现金流 / 购置固定资产所付现金。',f:'200,000 / 125,000 = 1.6'},
+ {q:'净利率 <span class="num">8%</span>，总资产周转率 <span class="num">1.5</span>。ROA 为？',opts:['12%','5.33%','9.5%','0.12%'],correct:0,ex:'杜邦：ROA = 净利率 × 总资产周转率。',f:'8% × 1.5 = 12%'},
+ {q:'净销售额 <span class="num">¥1,000,000</span>，净利润 <span class="num">¥80,000</span>，平均资产 <span class="num">¥500,000</span>。下列分解正确的是？',opts:['净利率8% × 周转率2.0 = ROA 16%','净利率8% × 周转率0.5 = 4%','净利率12.5% × 周转率1.6 = 20%','净利率16% × 周转率1.0 = 16%'],correct:0,ex:'净利率=净利润/销售；周转率=销售/平均资产；相乘即 ROA。',f:'8% × 2.0 = 16% = 80,000/500,000'},
+ {q:'甲：净利率 <span class="num">5%</span>、周转率 <span class="num">3.0</span>；乙：净利率 <span class="num">15%</span>、周转率 <span class="num">1.0</span>。最合理判断是？',opts:['两家 ROA 均 15%，甲偏低成本·高周转，乙偏差异化·高毛利','乙 ROA 更高，因净利率更高','甲 ROA 更高，因周转率更高','无法比较'],correct:0,ex:'ROA=净利率×周转率，两家都=15%；分别对应两类制造商战略。',f:'5%×3.0 = 15% = 15%×1.0'},
+];
+const BIG=[
+ {title:'大题一 · 编制损益表并计算盈利比率',
+  given:[['销售收入（即净销售额）','1,500,000'],['销售成本','900,000'],['运营费用','360,000'],['利息费用','40,000'],['所得税税率','25%']],
+  subs:[{lab:'毛利润',unit:'¥',ans:600000,type:'num'},{lab:'运营净收入',unit:'¥',ans:240000,type:'num'},{lab:'税前利润',unit:'¥',ans:200000,type:'num'},{lab:'所得税费用',unit:'¥',ans:50000,type:'num'},{lab:'净利润',unit:'¥',ans:150000,type:'num'},{lab:'毛利率',unit:'%',ans:0.40,type:'pct'},{lab:'净利率',unit:'%',ans:0.10,type:'pct'}],
+  sol:'<h4>分步解答</h4><ol><li>毛利润 = 1,500,000 − 900,000 = <code>600,000</code></li><li>运营净收入 = 600,000 − 360,000 = <code>240,000</code></li><li>税前利润 = 240,000 − 40,000 = <code>200,000</code></li><li>所得税 = 200,000 × 25% = <code>50,000</code></li><li>净利润 = 200,000 − 50,000 = <code>150,000</code></li><li>毛利率 = 600,000 / 1,500,000 = <code>40%</code></li><li>净利率 = 150,000 / 1,500,000 = <code>10%</code></li></ol>'},
+ {title:'大题二 · 财务比率综合分析',
+  given:[['净销售额','2,000,000'],['销售成本','1,200,000'],['净利润','180,000'],['经营活动现金流量','240,000'],['应收账款净额（期初/期末）','220,000 / 180,000'],['存货（期初/期末）','280,000 / 320,000'],['固定资产净额（期初/期末）','760,000 / 840,000'],['资产总额（期初/期末）','1,150,000 / 1,250,000']],
+  subs:[{lab:'应收账款周转率',unit:'次',ans:10,type:'num',tol:0.05},{lab:'存货周转率',unit:'次',ans:4,type:'num',tol:0.05},{lab:'固定资产周转率',unit:'次',ans:2.5,type:'num',tol:0.05},{lab:'资产收益率 ROA',unit:'%',ans:0.15,type:'pct'},{lab:'收入质量比率',unit:'',ans:1.33,type:'ratio'}],
+  sol:'<h4>分步解答</h4><ol><li>平均应收 = 200,000 → 2,000,000/200,000 = <code>10 次</code></li><li>平均存货 = 300,000 → 1,200,000/300,000 = <code>4 次</code></li><li>平均固定资产 = 800,000 → 2,000,000/800,000 = <code>2.5 次</code></li><li>平均资产 = 1,200,000 → 180,000/1,200,000 = <code>15%</code></li><li>收入质量 = 240,000/180,000 ≈ <code>1.33</code></li></ol>'},
+];
+const CYCLE=[
+ {title:'综合题 · 分录 → 试算平衡 → 流动比率',
+  intro:'新设立的「明远公司」本月初无任何余额，发生下列交易（单位：元）：',
+  given:[['① 股东投入现金成立公司','200,000'],['② 向银行取得短期借款（现金）','100,000'],['③ 以现金购入设备','120,000'],['④ 赊购存货（尚未付款）','80,000'],['⑤ 以现金预付一年租金','24,000']],
+  subs:[{lab:'现金期末余额',unit:'¥',ans:156000,type:'num'},{lab:'资产总额（借方合计）',unit:'¥',ans:380000,type:'num'},{lab:'负债+所有者权益合计（贷方合计）',unit:'¥',ans:380000,type:'num'},{lab:'流动资产合计',unit:'¥',ans:260000,type:'num'},{lab:'流动负债合计',unit:'¥',ans:180000,type:'num'},{lab:'流动比率',unit:'',ans:1.44,type:'ratio'}],
+  sol:'<h4>① 会计分录</h4><div class="calc">① 借：现金 200,000  贷：实收资本 200,000\n② 借：现金 100,000  贷：短期借款 100,000\n③ 借：设备 120,000  贷：现金 120,000\n④ 借：存货 80,000   贷：应付账款 80,000\n⑤ 借：预付租金 24,000 贷：现金 24,000</div><h4>② 余额与试算平衡</h4><ol><li>现金 = 200,000+100,000−120,000−24,000 = <code>156,000</code></li><li>资产 = 156,000+120,000+80,000+24,000 = <code>380,000</code></li><li>权益类 = 100,000+80,000+200,000 = <code>380,000</code> → 平衡 ✓</li></ol><h4>③ 流动比率</h4><ol><li>流动资产 = 156,000+80,000+24,000 = <code>260,000</code>（设备非流动）</li><li>流动负债 = 100,000+80,000 = <code>180,000</code></li><li>流动比率 = 260,000/180,000 ≈ <code>1.44</code></li></ol>'},
+];
+
+function parseInput(raw,type){if(raw==null)return NaN;let s=String(raw).replace(/[,，\s¥￥%／/]/g,'').trim();if(s==='')return NaN;let n=parseFloat(s);if(isNaN(n))return NaN;if(type==='pct'&&n>1.5)n=n/100;return n;}
+function tolFor(s){if(s.tol!=null)return s.tol;if(s.type==='pct')return 0.005;if(s.type==='ratio')return 0.03;return 1;}
+
+const mcList=document.getElementById('mcList');let mcDone=0,mcRight=0;
+MC.forEach((item,qi)=>{const card=document.createElement('div');card.className='card';const L=['A','B','C','D','E'];
+ card.innerHTML='<div class="qnum">题 '+String(qi+1).padStart(2,'0')+'</div><div class="qtext">'+item.q+'</div><div class="opts"></div><div class="explain"><b>解析：</b>'+item.ex+'<span class="formula">'+item.f+'</span></div>';
+ const opts=card.querySelector('.opts');
+ item.opts.forEach((o,oi)=>{const b=document.createElement('button');b.className='opt';b.type='button';b.innerHTML='<span class="tag">'+L[oi]+'</span><span>'+o+'</span>';
+  b.addEventListener('click',()=>{if(card.dataset.answered)return;card.dataset.answered='1';opts.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+   opts.children[item.correct].classList.add('correct');if(oi!==item.correct)b.classList.add('wrong');else mcRight++;mcDone++;
+   card.querySelector('.explain').classList.add('show');updateScore();});
+  opts.appendChild(b);});
+ mcList.appendChild(card);});
+document.getElementById('mcTotal').textContent=MC.length;document.getElementById('mcN').textContent=MC.length;
+function updateScore(){document.getElementById('mcDone').textContent=mcDone;document.getElementById('mcRight').textContent=mcRight;document.getElementById('mcRate').textContent=mcDone?Math.round(mcRight/mcDone*100)+'%':'—';}
+
+function renderBig(container,data){data.forEach(p=>{const card=document.createElement('div');card.className='card';
+ let g=p.given.map(x=>'<tr><td>'+x[0]+'</td><td>'+x[1]+'</td></tr>').join('');
+ card.innerHTML='<div class="qnum">'+p.title+'</div>'+(p.intro?'<p class="qtext" style="margin-bottom:8px">'+p.intro+'</p>':'')+'<div class="given"><div class="gh">已知资料</div><table class="gt"><tbody>'+g+'</tbody></table></div><div class="subs"></div><div class="btnrow"><button class="act check" type="button">核对本题</button><button class="act ghost solBtn2" type="button">查看完整解答</button></div><div class="solution sol">'+p.sol+'</div>';
+ const box=card.querySelector('.subs');
+ p.subs.forEach((s,si)=>{const row=document.createElement('div');row.className='sub';row.innerHTML='<div class="lab"><span class="idx">('+(si+1)+')</span>'+s.lab+'</div><input type="text" inputmode="decimal" aria-label="'+s.lab+'" autocomplete="off"><span class="unit">'+(s.unit||'')+'</span><span class="mark"></span>';box.appendChild(row);});
+ card.querySelector('.check').addEventListener('click',()=>{card.querySelectorAll('.sub').forEach((row,si)=>{const s=p.subs[si];const inp=row.querySelector('input');const mark=row.querySelector('.mark');const val=parseInput(inp.value,s.type);inp.classList.remove('ok','no');if(isNaN(val)){mark.textContent='–';mark.style.color='var(--ink-soft)';return;}const ok=Math.abs(val-s.ans)<=tolFor(s);if(ok){inp.classList.add('ok');mark.textContent='✓';mark.style.color='var(--green)';}else{inp.classList.add('no');mark.textContent='✕';mark.style.color='var(--red)';}});});
+ const sol=card.querySelector('.solution');card.querySelector('.solBtn2').addEventListener('click',e=>{sol.classList.toggle('show');e.target.textContent=sol.classList.contains('show')?'收起解答':'查看完整解答';});
+ container.appendChild(card);});}
+renderBig(document.getElementById('bigList'),BIG);
+renderBig(document.getElementById('cycleList'),CYCLE);
+
+document.querySelectorAll('.btnrow > .solBtn').forEach(btn=>{
+ btn.addEventListener('click',()=>{const sol=btn.closest('.card').querySelector('.solution');sol.classList.toggle('show');btn.textContent=sol.classList.contains('show')?'收起解答':'查看完整解答';});
+});
+
+function showPanel(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const t=document.getElementById(id);if(t)t.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+document.querySelectorAll('.toc-list button[data-go]').forEach(b=>b.addEventListener('click',()=>showPanel(b.dataset.go)));
+document.getElementById('homeBtn').addEventListener('click',()=>showPanel('p-toc'));
+
+document.getElementById('resetBtn').addEventListener('click',()=>{if(confirm('确定清空所有计算题作答并重新开始？'))location.reload();});
+</script>
+</body>
+</html>
